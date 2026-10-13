@@ -82,5 +82,5 @@ open "workspace/租用台账原型_v4.html"
 
 ## 七、Git
 
-- 远程仓库：`https://github.com/kaer0927-crypto/sanya-rental-requirements.git`（私有）
+- 远程仓库：`https://github.com/kaer0927-crypto/sanya-rental-requirements.git`（公开）
 - 分支：`main`，提交信息使用 Conventional Commits（如 `docs:` / `feat:` / `chore:`）
