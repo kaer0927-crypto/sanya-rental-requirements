@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="0DrPBqcL7zVf6bvBvBCHBE">
+<head data-page-node-id="1q4aaCjKbAyFj25EeqoXfI">
+<meta charset="UTF-8" data-page-node-id="g91AQZmEiGNDH1FLB0JOt8">
+<meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="01mwPLLH0kzC3nJU12o01U">
+<title>智慧后勤一体化平台 · 租用合同管理 / 租用台账 · 原型 v2</title>
+<style>
+:root{
+  --brand-900:#0C2A4A; --brand-800:#0F355C; --brand-700:#14497C;
+  --brand-600:#1D5FA8; --brand-500:#2E7BD1; --brand-100:#DCEAF7; --brand-50:#EEF5FC;
+  --ink-900:#1A2634; --ink-700:#3D4A5A; --ink-500:#6B7A8C; --ink-300:#A8B4C2;
+  --line-200:#E3E9F0; --line-100:#EEF2F7;
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#F8FAFD;
+  --amber-50:#FDF6E7; --amber-200:#F3DFAE; --amber-700:#8A6116;
+  --green-50:#E9F6EE; --green-700:#1F7A44;
+  --red-50:#FCEDED; --red-700:#B33A3A;
+  --cyan-50:#E8F4F6; --cyan-700:#1F6E7A;
+  --shadow:0 1px 2px rgba(16,35,61,.05),0 1px 6px rgba(16,35,61,.04);
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink-900);font-size:14px;line-height:1.6;display:flex}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--brand-600);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ===== 侧边栏 ===== */
+.sidebar{width:224px;flex-shrink:0;background:linear-gradient(180deg,var(--brand-900),var(--brand-800));color:#C7D6E8;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.logo{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo b{color:#fff;font-size:15px;font-weight:600;letter-spacing:.5px;display:block}
+.logo span{font-size:11px;color:#7E95AF;letter-spacing:1px}
+.nav{flex:1;overflow-y:auto;padding:10px 0 20px}
+.nav-group{font-size:11px;color:#6E86A3;padding:16px 20px 6px;letter-spacing:2px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 20px;color:#C7D6E8;cursor:pointer;font-size:13.5px;border-left:3px solid transparent;transition:background .15s}
+.nav-item:hover{background:rgba(255,255,255,.06)}
+.nav-item.active{background:rgba(46,123,209,.22);color:#fff;border-left-color:var(--brand-500);font-weight:500}
+.nav-item.disabled{color:#5E7591;cursor:not-allowed}
+.nav-item .badge-new{margin-left:auto;font-size:10px;background:var(--brand-500);color:#fff;border-radius:3px;padding:1px 5px;letter-spacing:0}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.85}
+.side-foot{padding:14px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#6E86A3;line-height:1.8}
+
+/* ===== 主区 ===== */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--line-200);display:flex;align-items:center;padding:0 24px;gap:8px;position:sticky;top:0;z-index:10}
+.crumb{font-size:13px;color:var(--ink-500)}
+.crumb b{color:var(--ink-900);font-weight:600}
+.topbar .spacer{flex:1}
+.topbar .user{font-size:13px;color:var(--ink-700);display:flex;align-items:center;gap:8px}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--brand-600);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.content{padding:20px 24px 40px;max-width:1280px;width:100%;margin:0 auto}
+.page{display:none;animation:fadein .18s ease-out}
+.page.show{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ===== 通用组件 ===== */
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px}
+.page-title{font-size:19px;font-weight:600;letter-spacing:.3px}
+.page-desc{font-size:12.5px;color:var(--ink-500);margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:6px;font-size:13.5px;border:1px solid transparent;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;background:var(--surface)}
+.btn-primary{background:var(--brand-600);color:#fff;border-color:var(--brand-600)}
+.btn-primary:hover{background:var(--brand-700)}
+.btn-default{border-color:var(--line-200);color:var(--ink-700)}
+.btn-default:hover{border-color:var(--brand-500);color:var(--brand-600)}
+.btn-text{border:none;background:none;color:var(--brand-600);padding:3px 7px;font-size:13px;border-radius:4px}
+.btn-text:hover{background:var(--brand-50)}
+.btn-text.danger{color:var(--red-700)}
+.btn-text.danger:hover{background:var(--red-50)}
+.btn-text[disabled]{color:var(--ink-300);cursor:not-allowed}
+.btn svg{width:14px;height:14px}
+
+.card{background:var(--surface);border:1px solid var(--line-200);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.card-head{padding:13px 18px;border-bottom:1px solid var(--line-100);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:9px}
+.card-title::before{content:"";width:3px;height:14px;background:var(--brand-600);border-radius:2px}
+.card-body{padding:18px}
+
+/* 筛选条 */
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--surface);border:1px solid var(--line-200);border-radius:var(--radius);padding:13px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.f-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink-700)}
+select,input[type=text],input[type=number],input[type=date]{padding:6px 10px;border:1px solid var(--line-200);border-radius:6px;font-size:13px;background:#fff;color:var(--ink-900);outline:none;font-family:inherit;transition:border .15s}
+select:focus,input:focus{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(46,123,209,.1)}
+.filter-bar select,.filter-bar input{min-width:120px}
+
+/* 表格 */
+table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--surface-2);color:var(--ink-500);font-weight:500;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-200);white-space:nowrap;font-size:12.5px}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line-100);color:var(--ink-900);vertical-align:middle}
+.tbl tbody tr{transition:background .12s}
+.tbl tbody tr:hover{background:#FAFCFE}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl .ops{white-space:nowrap}
+.addr-cell{max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* 徽章 */
+.tag{display:inline-flex;align-items:center;padding:2px 9px;font-size:12px;border-radius:4px;font-weight:500;line-height:1.7;white-space:nowrap}
+.tag-import{background:var(--brand-50);color:var(--brand-700)}
+.tag-manual{background:var(--cyan-50);color:var(--cyan-700)}
+.tag-pending{background:var(--amber-50);color:var(--amber-700);border:1px solid var(--amber-200)}
+.tag-ok{background:var(--green-50);color:var(--green-700)}
+.tag-addr{background:var(--surface-2);color:var(--ink-500);border:1px solid var(--line-200)}
+.tag-no{background:var(--red-50);color:var(--red-700)}
+.tag-yes{background:var(--green-50);color:var(--green-700)}
+.pend-note{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--amber-700)}
+
+/* 提示块 */
+.notice{display:flex;gap:10px;padding:12px 15px;border-radius:8px;font-size:13px;line-height:1.65;margin-bottom:16px}
+.notice.warn{background:var(--amber-50);border:1px dashed var(--amber-200);color:var(--amber-700)}
+.notice.info{background:var(--brand-50);border:1px solid var(--brand-100);color:var(--brand-700)}
+.notice b{font-weight:600}
+.notice .nicon{flex-shrink:0;width:16px;height:16px;margin-top:3px}
+.confirm-stamp{display:inline-flex;align-items:center;gap:5px;background:var(--amber-50);border:1px dashed var(--amber-200);color:var(--amber-700);font-size:12px;font-weight:600;border-radius:4px;padding:2px 9px}
+
+/* 表单 */
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 28px}
+.f-field{display:flex;flex-direction:column;gap:6px}
+.f-field.full{grid-column:1/-1}
+/* 纵向表单（对齐现有系统布局） */
+.vform{max-width:760px}
+.v-row{display:flex;align-items:flex-start;margin-bottom:13px}
+.v-row>label{width:212px;text-align:right;padding:7px 12px 0 0;font-size:13px;color:var(--ink-700);flex-shrink:0;line-height:1.5}
+.v-row>label i{color:var(--red-700);font-style:normal;margin-right:2px}
+.v-row .ctl{width:280px}
+.v-row .ctl.wide{width:460px}
+.v-row .ctl input,.v-row .ctl select{width:100%}
+.v-row .ctl textarea{width:100%;padding:7px 10px;border:1px solid var(--line-200);border-radius:6px;font-size:13px;font-family:inherit;color:var(--ink-900);outline:none;resize:vertical;transition:border .15s}
+.v-row .ctl textarea:focus{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(46,123,209,.1)}
+.v-row .f-hint{display:block;font-size:12px;color:var(--ink-300);margin-top:4px}
+.f-label{font-size:13px;color:var(--ink-700)}
+.f-label i{color:var(--red-700);font-style:normal;margin-right:3px}
+.f-hint{font-size:12px;color:var(--ink-300)}
+.seg{display:inline-flex;border:1px solid var(--line-200);border-radius:7px;overflow:hidden;background:var(--surface-2)}
+.seg button{padding:7px 18px;border:none;background:none;font-size:13.5px;color:var(--ink-700);cursor:pointer;font-family:inherit;transition:all .15s;border-right:1px solid var(--line-200)}
+.seg button:last-child{border-right:none}
+.seg button.on{background:var(--brand-600);color:#fff;font-weight:500}
+.seg button:not(.on):hover{color:var(--brand-600)}
+.date-pair{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.date-pair em{color:var(--ink-300);font-style:normal}
+.area-calc{background:var(--brand-50);border:1px solid var(--brand-100);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--brand-700);display:flex;gap:20px;align-items:center;margin-top:2px}
+
+/* 步骤条 */
+.steps{display:flex;align-items:center;padding:6px 0 22px}
+.step{display:flex;align-items:center;gap:9px}
+.step .dot{width:26px;height:26px;border-radius:50%;background:var(--line-200);color:var(--ink-500);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all .2s}
+.step .lbl{font-size:13px;color:var(--ink-500);white-space:nowrap}
+.step.on .dot{background:var(--brand-600);color:#fff}
+.step.on .lbl{color:var(--brand-700);font-weight:600}
+.step.done .dot{background:var(--green-50);color:var(--green-700)}
+.step-line{flex:1;height:1.5px;background:var(--line-200);margin:0 10px;min-width:24px}
+.step-line.done{background:var(--green-700);opacity:.4}
+
+/* 结果统计 */
+.stat-row{display:flex;gap:14px;margin-bottom:16px}
+.stat{flex:1;background:var(--surface);border:1px solid var(--line-200);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow)}
+.stat .k{font-size:12.5px;color:var(--ink-500)}
+.stat .v{font-size:24px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat .v.blue{color:var(--brand-600)}.stat .v.amber{color:var(--amber-700)}.stat .v.red{color:var(--red-700)}.stat .v.green{color:var(--green-700)}
+
+/* 弹窗 */
+.mask{position:fixed;inset:0;background:rgba(12,42,74,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+.mask.show{display:flex}
+.modal{background:#fff;border-radius:10px;width:560px;max-width:100%;max-height:88vh;overflow:auto;box-shadow:0 18px 50px rgba(12,42,74,.25)}
+.modal-head{padding:15px 20px;border-bottom:1px solid var(--line-100);font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.modal-x{border:none;background:none;font-size:20px;color:var(--ink-300);cursor:pointer;line-height:1}
+.modal-x:hover{color:var(--ink-900)}
+.modal-body{padding:20px}
+.modal-foot{padding:13px 20px;border-top:1px solid var(--line-100);display:flex;justify-content:flex-end;gap:9px;background:var(--surface-2)}
+.casc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* toast */
+#toast{position:fixed;top:64px;left:50%;transform:translateX(-50%) translateY(-12px);background:var(--ink-900);color:#fff;font-size:13px;padding:9px 18px;border-radius:7px;opacity:0;pointer-events:none;transition:all .25s ease-out;z-index:99;box-shadow:0 8px 24px rgba(12,42,74,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.back-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-500);cursor:pointer;margin-bottom:12px}
+.back-link:hover{color:var(--brand-600)}
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 28px}
+.dt{font-size:12.5px;color:var(--ink-500)}
+.dd{font-size:13.5px;color:var(--ink-900);margin-top:2px}
+.empty-tip{padding:26px;text-align:center;color:var(--ink-300);font-size:13px}
+.pager{display:flex;justify-content:flex-end;gap:5px;padding:12px 0 2px;font-size:13px;color:var(--ink-500)}
+.pager span.cur{background:var(--brand-600);color:#fff;border-radius:5px;padding:2px 9px}
+@media (max-width:1100px){.form-grid,.detail-grid,.casc{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body data-page-node-id="Y4bcOUY064AkBcjcP8SYNK">
+
+<!-- ============ 侧边栏 ============ -->
+<aside class="sidebar" data-page-node-id="CK2C4FuvMVGOTLSKFBeZdo">
+  <div class="logo" data-page-node-id="dC3zAcwUiogfyt7P2ZgRxr"><b data-page-node-id="GmoYaeTXueHqZRRI02IwmS">智慧后勤一体化平台</b><span data-page-node-id="Q0z9QiH6Cpjx9Y5ImI2Ay3">三亚市机关事务管理局</span></div>
+  <nav class="nav" data-page-node-id="WzfL6Totx2fUbuSQS2BGqg">
+    <div class="nav-group" data-page-node-id="TQNFFSxUs0uYlC1LjyTK0e">现有模块（示意）</div>
+    <div class="nav-item disabled" data-page-node-id="840TNJDzdPeasmJGidVDvT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="prjFtLOMmnZOsdVUpb48vn"><rect x="3" y="3" width="7" height="7" rx="1" data-page-node-id="sMYA892F8XpyByjdbDM6VO"/><rect x="14" y="3" width="7" height="7" rx="1" data-page-node-id="TEHWeoKIMFsL7tUvlsFKph"/><rect x="3" y="14" width="7" height="7" rx="1" data-page-node-id="9yGOUrncfUVhJNrefOfg49"/><rect x="14" y="14" width="7" height="7" rx="1" data-page-node-id="yJxqAawHedCApdsG71a0eW"/></svg>工作台</div>
+    <div class="nav-item disabled" data-page-node-id="1e9l6IRR8JJpxnGoCHiLqZ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="yA103CcUmPyDj08VsCPgYe"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" data-page-node-id="fIelB6jUUiBPwZbs5yqvjI"/></svg>办公用房台账（自建）</div>
+    <div class="nav-item disabled" data-page-node-id="D0vcZVqAbDaNCA94bA3ltm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="b6gHHeRSnjjXA1lVCUFi3G"><rect x="2" y="6" width="13" height="12" rx="2" data-page-node-id="FoDhIPE9yLe8QVqodsOVdK"/><path d="M15 10h4l3 4v4h-7" data-page-node-id="GqFDvLL7zKlzaKG2BQWh4B"/></svg>公务用车</div>
+    <div class="nav-group" data-page-node-id="Wqrp1RRKbuEUOlc4f8CGnZ">本期新增</div>
+    <div class="nav-item active" onclick="showPage('list',this)" data-page-node-id="fuSvcIA4AHQkCHtpvRnXAX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="4O2tShqjYmtCD3c0LwxBF9"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" data-page-node-id="OCqZ4pOoA2y98bQRlqwqWR"/><path d="M14 3v6h6M9 13h6M9 17h4" data-page-node-id="HHMDrNcYFUsRRSEYe7LR4L"/></svg>租用合同管理<span class="badge-new" data-page-node-id="csSKOV0hIdOCzgAyrakawN">新</span></div>
+    <div class="nav-item" onclick="showPage('ledger',this)" data-page-node-id="spKCnb9yB6XiTw8IN87JQu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="VHkJDo9y1YbTcZ6xvgVHRr"><path d="M4 4h16v16H4zM4 9h16M9 9v11" data-page-node-id="JRgbolZwZ45V4u9APcJEF5"/></svg>租用台账<span class="badge-new" data-page-node-id="YtNoC45B5wiDujtaSv8x0a">新</span></div>
+  </nav>
+  <div class="side-foot" data-page-node-id="LJIMvUydIWDMKtbknmTmd5">原型 v2 · 2026-09-07<br data-page-node-id="xAoY7tu80kY14debfdVQC9">仅作交互演示</div>
+</aside>
+
+<!-- ============ 主区 ============ -->
+<div class="main" data-page-node-id="vF2xv50ThuVVWzkYhbTnLp">
+  <div class="topbar" data-page-node-id="UU2brAmHlrGvzlJXhEaD4l">
+    <span class="crumb" id="crumb" data-page-node-id="Uth5305HZ4vw4TDahT9Ad0">租用合同管理 / <b data-page-node-id="zGvGBUrcShRAHSEyhSBUMI">合同列表</b></span>
+    <div class="spacer" data-page-node-id="jhSg17CxtvHvWiNIvSXUnK"></div>
+    <div class="user" data-page-node-id="wGz1BNyLjOzvSOk4VzIP2W"><span class="avatar" data-page-node-id="VzNLXcISacOa8QWioKBnt7">管</span>机关事务局 · 资产科</div>
+  </div>
+
+  <div class="content" data-page-node-id="7XvAB6QjI4yU1fLQ6Y4whZ">
+
+  <!-- ===== 页面：合同列表 ===== -->
+  <section class="page show" id="page-list" data-page-node-id="znMxgGz3UGq7W3d7grXoio">
+    <div class="page-head" data-page-node-id="Sykhsnf912fx4FLlGnMSN6">
+      <div data-page-node-id="8PtiwtTiVv6k01t2FKC1oY">
+        <div class="page-title" data-page-node-id="Tnmyv6pEEmqZcpJ05QJgjd">租用合同管理</div>
+        <div class="page-desc" data-page-node-id="HL0ZQingYTe98AHS931euw">登记外部租赁办公用房及技术业务用房的合同，支持按客户统计表模板批量导入</div>
+      </div>
+      <div style="display:flex;gap:9px" data-page-node-id="VM57IkWHMoPmvbDtTjq1fC">
+        <button class="btn btn-default" onclick="showPage('import')" data-page-node-id="O6fp55otT0YbnY1ML2qS0A">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="W9swFTe2RZPGMEabQP9EQz"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" data-page-node-id="ZZ1OvQp145dn21GDmiVYPB"/></svg>批量导入
+        </button>
+        <button class="btn btn-primary" onclick="showPage('form')" data-page-node-id="eDRT8FUrmN2qn6eXBwG9yp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="C7kGVd8GbDTk2lTogWqAlF"><path d="M12 5v14M5 12h14" data-page-node-id="ynJH1JGHar3EqNyiEBDJvL"/></svg>新增合同
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-bar" data-page-node-id="PmlzhcnjviyoH3yxjMFE2l">
+      <div class="f-item" data-page-node-id="Mq85S864XG17qdzFrLA6jm">租用来源
+        <select data-page-node-id="XybvUDtmi7mEOJEjo3bvN7"><option data-page-node-id="TBFQ7BjIcPzhkU3RGQCd1G">全部</option><option data-page-node-id="ixnuPMefzKwC5K9eOE5UYq">合同导入</option><option data-page-node-id="DBz0nfSTaFYWorU9c67TDP">手工创建</option></select></div>
+      <div class="f-item" data-page-node-id="ETCcfoxADWBSdXbcyDarnr">租赁用途
+        <select data-page-node-id="YeKfFPWmwMegkP6qihiRPj"><option data-page-node-id="UuLumYc17WcGxgyrPxHLwF">全部</option><option data-page-node-id="CKaU3C2S4azhcjJvANDfgC">办公用房</option><option data-page-node-id="Rtkz9dFGiHyATHuXvpxAkv">技术业务用房</option></select></div>
+      <div class="f-item" data-page-node-id="JIJ6ZjDTAyHBne4vm7C9GD">单位性质
+        <select data-page-node-id="1pN5n7GRELMaCLxNzX4TBJ"><option data-page-node-id="veI1CHFH5e2kdQqmtAklUF">全部</option><option data-page-node-id="6LHZLkfdYdMdIK7DlEv6RK">行政</option><option data-page-node-id="heY1ZbrDJVyS39yUAm5lIH">参公</option><option data-page-node-id="eASolBiA8vPkuUkHLvn1jM">公益一类</option></select></div>
+      <div class="f-item" data-page-node-id="mnGIYNVxaJ45lmNOdL3PBJ">是否备案
+        <select data-page-node-id="8pRhWTLfUt3i1BXfDAMZtk"><option data-page-node-id="u0OZHmJ8KFuFqM52KABSMH">全部</option><option data-page-node-id="6FWiaoYBSKaDg4XGuZE7h6">是</option><option data-page-node-id="dnVT26rumjuITvGZ69aSf4">否</option></select></div>
+      <div class="f-item" data-page-node-id="m0YGdIeXW5jxZjIbnQbrZD"><input type="text" placeholder="单位 / 地址 / 出租方" style="width:190px" data-page-node-id="A2Rw7BoUhSovODHVHd4Ggc"></div>
+      <button class="btn btn-primary" style="padding:6px 16px" data-page-node-id="DcvLxXSOEPKh7eeHAJzhBA">查询</button>
+      <button class="btn btn-default" style="padding:6px 16px" data-page-node-id="F2ywj9LqWditGYD6B3pAyW">重置</button>
+    </div>
+
+    <div class="card" data-page-node-id="vzoYHOOkcZOTIGynWeaiBE">
+      <table class="tbl" data-page-node-id="litGj8jOqwxY7o6Kg5iFrW">
+        <thead data-page-node-id="Pc2oQ5TDB0Sv3Sw1CF8Kkp"><tr data-page-node-id="EDfdXWRpKDakGAfedcN11p">
+          <th style="width:44px" data-page-node-id="IqUB3G9sLGOLgzwjAGO3vb"><input type="checkbox" data-page-node-id="IfXGmTgEdrkoKPaplHvreO"></th>
+          <th data-page-node-id="IVHIJLIJ5jiXaoxkrrAIdS">合同编号</th><th data-page-node-id="7jKW8mk7VbzDsRxMl8HHAa">租用单位</th><th data-page-node-id="8hsQXamQV5A1cSQmBw5TpS">租赁地址</th><th data-page-node-id="p9WGPn72Xyq0HaAvFcf6Ss">出租方</th>
+          <th data-page-node-id="H2fgz22jrmksfQx0hPckVB">租赁用途</th><th data-page-node-id="eqPuvEW3y19XLV03FBAFat">租赁期限</th><th style="text-align:right" data-page-node-id="l51klEgCC8oChpfRn76Uni">年租金(元)</th>
+          <th data-page-node-id="qpeRBbhP1iD2Dy8sC1hVFV">备案</th><th data-page-node-id="vbDElaThFCD5BBztlJoPs7">租用来源</th><th class="ops" style="width:130px" data-page-node-id="IzohRNFhmJGETyVgCTaOH8">操作</th>
+        </tr></thead>
+        <tbody data-page-node-id="5yC7yW5WIUdXziJNreT6zG">
+          <tr data-page-node-id="H3V8wQtSIyUgRivWsku8UO">
+            <td data-page-node-id="KUqcZe3PIiQyYGq5EAS7c5"><input type="checkbox" data-page-node-id="0vfqP7mIqd1RX9k3uAHO5F"></td>
+            <td class="num" data-page-node-id="cSrJ47UuyMHTYELn7LB3Sh">HT-2026-0915</td><td data-page-node-id="xfHPBA8gMzSobMQ4pkRWoB">三亚市市场监督管理局</td>
+            <td class="addr-cell" title="吉阳区迎宾路382号某商业广场3层" data-page-node-id="HPnlInH0UNW1XDWrUHL2jZ">吉阳区迎宾路382号某商业广场3层</td>
+            <td data-page-node-id="pHDFS1yBDO8vyxm8WCdmvR">三亚市某投资有限公司</td><td data-page-node-id="GDeHUzI1AAQwHqGXe5u1cl">办公用房</td>
+            <td class="num" data-page-node-id="rczj0cGcJ0QY5eHM8zwsup">2026-09-08 ~ 2027-09-07</td>
+            <td class="num" style="text-align:right" data-page-node-id="ZlYuQ6Az9kAHhb2EYAhVVe">540,000</td>
+            <td data-page-node-id="1BxAQdIfbOqwsJKGG7Conl"><span class="tag tag-yes" data-page-node-id="lxMrD70bpanreKprBoIli2">是</span></td><td data-page-node-id="pIqB8DOyLxMVm7Yoe3bPZF"><span class="tag tag-import" data-page-node-id="uOBkV1j6D2lV1r7vnShAEB">合同导入</span></td>
+            <td class="ops" data-page-node-id="8CNWHomqtDP2fM9FQstB22"><button class="btn-text" onclick="showPage('detail')" data-page-node-id="RNhZWjTtYa7H6t6yjE92lK">详情</button><button class="btn-text" data-page-node-id="HUvshcz1DGEAWqFvd1v21s">编辑</button><button class="btn-text danger" data-page-node-id="LMijtdt1GwsTKOrutRzWHW">删除</button></td>
+          </tr>
+          <tr data-page-node-id="qITQQFEDmxHFgzyR6ao31a">
+            <td data-page-node-id="xjN7HUs5ZWjel8BjJZgR38"><input type="checkbox" data-page-node-id="1GIRjQDpRzJ4xkkldv8mxU"></td>
+            <td class="num" data-page-node-id="txMfdAFbgW44XJXRjaxPHD">HT-2026-0912</td><td data-page-node-id="DWy2egdHWRaFgeg8T7inlY">三亚市自然资源和规划局</td>
+            <td class="addr-cell" data-page-node-id="ArClBhf2bGcqU40f5YD1Jv">天涯区解放路556号鑫泰大厦8层</td>
+            <td data-page-node-id="AEzHf5pMxgGSXf6pQFPJBy">三亚某置业有限公司</td><td data-page-node-id="CRgy2Fa1XecZzlQ2NKDesZ">办公用房</td>
+            <td class="num" data-page-node-id="qFfFBDMKMzHEzxyJNDAcoC">2026-06-01 ~ 2028-05-31</td>
+            <td class="num" style="text-align:right" data-page-node-id="TBzxEZodn7ItsCBrfEnNPc">320,000</td>
+            <td data-page-node-id="KJBCOcYw7hXlvb3XY63kA6"><span class="tag tag-no" data-page-node-id="J3AWOok6Lxuxa88Pof3M92">否</span></td><td data-page-node-id="7JnZzz7101V1FNCKySKuNQ"><span class="tag tag-import" data-page-node-id="i3yFi7Fabn2KuQP6IpXdBD">合同导入</span></td>
+            <td class="ops" data-page-node-id="waWyjZRtJleowRn5hMkdxv"><button class="btn-text" onclick="showPage('detail')" data-page-node-id="9GcbGyiXtkm3xRrd6nYv98">详情</button><button class="btn-text" data-page-node-id="foL3NzCAxBcTDrIisPe60F">编辑</button><button class="btn-text danger" data-page-node-id="mqfHDg8YlvBnJDFTX8ESvv">删除</button></td>
+          </tr>
+          <tr data-page-node-id="4goC7bxlYvTFv398jE4ynA">
+            <td data-page-node-id="LW7Xf6ARkQWkAPv7AWXVfj"><input type="checkbox" data-page-node-id="B3hzIRoIGC1enj35hk9Tuz"></td>
+            <td class="num" data-page-node-id="uNNnyzRnJDpUZUkhXDfWaK">HT-2026-0908</td><td data-page-node-id="jIGHXa0MSeRHueFcmsTYg2">三亚市旅游和文化广电体育局</td>
+            <td class="addr-cell" data-page-node-id="hxaiBR8LBbaHwGnalLjl5L">崖州区科技路1号科创中心303室</td>
+            <td data-page-node-id="O632dDbxVSATPGFNAeC00Q">李某（个人房东）</td><td data-page-node-id="7rE4D0b7FReXItJmkjC02B">技术业务用房</td>
+            <td class="num" data-page-node-id="G4LkSreeh8MgVAw3hqmBRx">2026-07-01 ~ 2027-06-30</td>
+            <td class="num" style="text-align:right" data-page-node-id="abfcKZH3AGRRXcjYuxildy">96,000</td>
+            <td data-page-node-id="EnqC3Oru2WDVzWFmITLB0d"><span class="tag tag-yes" data-page-node-id="a4KiV4RN25CywySGv62Hp8">是</span></td><td data-page-node-id="khPOBf2FoCwUvLv4NGBelQ"><span class="tag tag-manual" data-page-node-id="Ks3cgmiGzoCSNzuVGXAxGQ">手工创建</span></td>
+            <td class="ops" data-page-node-id="0fdBzYYcNy2Yrslg85TSDb"><button class="btn-text" onclick="showPage('detail')" data-page-node-id="CcGJCxyRC0NilD0pyrwZTe">详情</button><button class="btn-text" data-page-node-id="icDwRzOR1NeOQm7cxGh09V">编辑</button><button class="btn-text danger" data-page-node-id="IbnxiC6FCG0K1rsJq3nkj6">删除</button></td>
+          </tr>
+          <tr data-page-node-id="FUkqkZ12F2phEc04sMUtfU">
+            <td data-page-node-id="chYkKknIzRsLLX0XaSSYNU"><input type="checkbox" data-page-node-id="B8tl7Sp5FBrRUihpXHYnh9"></td>
+            <td class="num" data-page-node-id="pWMe6aHCsKcFpipC808449">HT-2026-0901</td><td data-page-node-id="DSSkr7CUije4JiHdEyTVno">三亚市农业农村局</td>
+            <td class="addr-cell" data-page-node-id="ygo2HF7LGKHyqWvYaNDI1C">吉阳区榆亚路115号滨海大楼5层</td>
+            <td data-page-node-id="puGbDHoKhnHjhSvWpXeH1q">三亚某物业管理有限公司</td><td data-page-node-id="51VrrO4KhKcBzWMyDogbzA">办公用房</td>
+            <td class="num" data-page-node-id="fqBBJCSgH7fwzI5FiVwe4y">2026-01-10 ~ 2028-01-09</td>
+            <td class="num" style="text-align:right" data-page-node-id="DagnHffFDrWIKRo3Vcw1Ww">210,000</td>
+            <td data-page-node-id="XHmUWIKhpUtxE9tEkWIiYu"><span class="tag tag-yes" data-page-node-id="Xw9FgCH6EoiYjc4D6qcpci">是</span></td><td data-page-node-id="zgZAGLmRHGrAloM9pGDIF1"><span class="tag tag-import" data-page-node-id="rMG5x5GwS0W82ct3GIqJsU">合同导入</span></td>
+            <td class="ops" data-page-node-id="28zQnKrVSeOEeHA16GNnBZ"><button class="btn-text" onclick="showPage('detail')" data-page-node-id="kX6aeGmC4DWgAy10hA01di">详情</button><button class="btn-text" data-page-node-id="X1UaTrEdUoAuODH0LETIkn">编辑</button><button class="btn-text danger" data-page-node-id="S1fvH63L3mdmRoDnBPoLED">删除</button></td>
+          </tr>
+          <tr data-page-node-id="8YEVOtRUFEVOBK7D3q9O2L">
+            <td data-page-node-id="DBygZ7IhzrHch1vpd67TG0"><input type="checkbox" data-page-node-id="e0s2uuoAgmQeDvw64T3Aqo"></td>
+            <td class="num" data-page-node-id="Y0HM2Qb6xFO1qiQW72MjLY">HT-2026-0827</td><td data-page-node-id="URfPDip5Dh0DoV4U6cNxvr">三亚市卫生健康委员会</td>
+            <td class="addr-cell" data-page-node-id="cNIP3HYoZKMAUZf1ol2s2l">天涯区凤凰路106号某商务酒店401、402室</td>
+            <td data-page-node-id="gWmxIyFRLcWT9TCSW00jtp">某商务酒店管理有限公司</td><td data-page-node-id="Ct89Ij4svoGm2kQIIpz8FC">技术业务用房</td>
+            <td class="num" data-page-node-id="WZ6nKylQ9q9oxgYHmUyfRi">2025-12-01 ~ 2026-11-30</td>
+            <td class="num" style="text-align:right" data-page-node-id="10V9mEKVBeUtAghRcsi2Az">180,000</td>
+            <td data-page-node-id="7YIE5rKFtPXASklECW46B8"><span class="tag tag-no" data-page-node-id="fhOKuDWnaNYuNkEMSkE5wY">否</span></td><td data-page-node-id="kv7VRYklrHq1rHvwVqPuGY"><span class="tag tag-manual" data-page-node-id="SmEKqGmPj4E8XhVbjEsclE">手工创建</span></td>
+            <td class="ops" data-page-node-id="oZNmIBkEp0ENQjl4cpEakO"><button class="btn-text" onclick="showPage('detail')" data-page-node-id="MutMrgnaJ9k31O9NZzdkXT">详情</button><button class="btn-text" data-page-node-id="oWaJ17DWtbOe7vdEj8pKTd">编辑</button><button class="btn-text danger" data-page-node-id="14fbfIDpMw00USHoxVQacY">删除</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding:0 18px 14px" data-page-node-id="5tszlyDnBjfoRzsylu1FZ2"><div class="pager" data-page-node-id="rsK5IgRU944bGjBUA8EmYb">共 27 条<span class="cur" data-page-node-id="4liN0l2N8Y9pEP6bITyF8K">1</span><span data-page-node-id="6XfDfDtaASpS9CYqYNePxH">2</span><span data-page-node-id="oLx7HVj1VUVh9BjHfnfZ3U">3</span>每页 10 条</div></div>
+    </div>
+  </section>
+
+  <!-- ===== 页面：新增合同（布局对齐现有系统：纵向单列表单） ===== -->
+  <section class="page" id="page-form">
+    <span class="back-link" onclick="showPage('list')">‹ 返回合同列表</span>
+    <div class="page-head">
+      <div>
+        <div class="page-title">新增租用合同</div>
+        <div class="page-desc">布局与现有系统表单一致；保存后资产信息自动生成租用记录，归入「租用台账」（租用来源 = 手工创建）</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="card-title">基础信息</span></div>
+      <div class="card-body">
+        <div class="vform">
+          <div class="v-row"><label><i>*</i>合同编号：</label><div class="ctl"><input type="text" placeholder="请输入合同编号"></div></div>
+          <div class="v-row"><label><i>*</i>租用单位：</label><div class="ctl"><input type="text" placeholder="请选择"></div></div>
+          <div class="v-row"><label><i>*</i>单位性质：</label><div class="ctl"><select><option>请选择单位性质</option><option>行政</option><option>参公</option><option>公益一类</option></select></div></div>
+          <div class="v-row"><label>租赁建筑面积(㎡)：</label><div class="ctl"><input type="number" id="area-total" placeholder="请输入"><span class="f-hint">合计面积；选「直接填写租赁信息」时由 办公 + 业务 自动合计，可手工修正</span></div></div>
+          <div class="v-row"><label><i>*</i>出租方：</label><div class="ctl"><input type="text" placeholder="请输入出租方"></div></div>
+          <div class="v-row"><label><i>*</i>租赁用途：</label><div class="ctl"><select><option>请选择租赁用途</option><option>办公用房</option><option>技术业务用房</option></select></div></div>
+          <div class="v-row"><label><i>*</i>租赁起始时间：</label><div class="ctl" style="width:340px">
+            <div class="date-pair"><input type="date"><em>—</em><input type="date"></div>
+          </div></div>
+          <div class="v-row"><label><i>*</i>年租金(元)：</label><div class="ctl"><input type="number" placeholder="请输入年租金"></div></div>
+          <div class="v-row"><label>押金：</label><div class="ctl"><input type="number" placeholder="请输入押金"></div></div>
+          <div class="v-row"><label><i>*</i>租金来源：</label><div class="ctl"><select><option>请选择租金来源</option><option>财政拨款</option><option>自有资金</option><option>其他</option></select></div></div>
+          <div class="v-row"><label><i>*</i>是否向机关事务管理局备案：</label><div class="ctl"><select><option>请选择是否向机关事务管理局备案</option><option>是</option><option>否</option></select></div></div>
+          <div class="v-row"><label>联系人：</label><div class="ctl"><input type="text" placeholder="请输入联系人"></div></div>
+          <div class="v-row"><label>联系电话：</label><div class="ctl"><input type="text" placeholder="请输入联系电话"></div></div>
+          <div class="v-row"><label>备注：</label><div class="ctl"><textarea rows="3" placeholder="请输入"></textarea></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">资产信息</span>
+        <span class="confirm-stamp">方式二保留与否 · 待客户确认（Q4）</span>
+      </div>
+      <div class="card-body">
+        <div class="seg" id="asset-seg">
+          <button class="on" data-v="direct">直接填写租赁信息</button>
+          <button data-v="pick">选择已有资产</button>
+        </div>
+
+        <!-- 方式一：直接填写（与导入模板字段一致） -->
+        <div id="asset-direct" style="margin-top:16px">
+          <div class="notice info" style="margin-bottom:16px;max-width:760px">
+            <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div>以下字段与《租用信息统计表》导入模板<b>完全一致</b>，手工创建与批量导入共用同一套字段与校验规则。系统不解析租赁地址对应的楼栋 / 楼层 / 房间，保存后按「地址级」记录进租用台账。</div>
+          </div>
+          <div class="vform">
+            <div class="v-row"><label><i>*</i>租赁地址：</label><div class="ctl wide"><input type="text" placeholder="示例：吉阳区迎宾路382号某商业广场3层301室"><span class="f-hint">自由文本，与统计表填报口径一致</span></div></div>
+            <div class="v-row"><label><i>*</i>办公用房面积(㎡)：</label><div class="ctl"><input type="number" id="area-office" placeholder="请输入" oninput="calcArea()"></div></div>
+            <div class="v-row"><label><i>*</i>业务用房面积(㎡)：</label><div class="ctl"><input type="number" id="area-biz" placeholder="请输入" oninput="calcArea()"></div></div>
+          </div>
+          <div class="area-calc" id="area-calc" style="visibility:hidden;max-width:760px">
+            <span>面积校验：</span><b id="calc-text">—</b>
+          </div>
+        </div>
+
+        <!-- 方式二：选择已有资产（待确认，布局对齐现有系统资产表格） -->
+        <div id="asset-pick" style="margin-top:16px;display:none">
+          <div class="notice warn" style="max-width:760px">
+            <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+            <div><b>待客户确认（Q4）</b>：该方式沿用现有资产选择器，范围为自建台账资产。若客户确认保留，自建合同场景继续走此入口；租用场景推荐方式一。</div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:9px;margin-bottom:10px">
+            <button class="btn btn-default" onclick="toast('演示：删除选中资产')">删除选中</button>
+            <button class="btn btn-primary" onclick="toast('演示：打开资产选择器（自建台账范围）')">选择资产</button>
+          </div>
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:44px"><input type="checkbox"></th>
+              <th style="width:56px">序号</th><th>资产编号</th><th>资产大类</th><th>资产类别</th>
+              <th>资产名称</th><th>原资产使用单位</th><th>资产权单位</th><th class="ops">操作</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td><td class="num">1</td><td class="num">ZC-0102-001</td>
+                <td>房屋及构筑物</td><td>办公用房</td><td>鑫泰大厦</td>
+                <td>三亚市自然资源和规划局</td><td>三亚市机关事务管理局</td>
+                <td class="ops"><button class="btn-text danger">移除</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td><td class="num">2</td><td class="num">ZC-0102-002</td>
+                <td>房屋及构筑物</td><td>办公用房</td><td>滨海大楼</td>
+                <td>三亚市农业农村局</td><td>三亚市机关事务管理局</td>
+                <td class="ops"><button class="btn-text danger">移除</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">附件信息</span>
+        <div style="display:flex;gap:9px">
+          <button class="btn btn-default" onclick="toast('演示：批量删除附件')">批量删除</button>
+          <button class="btn btn-primary" onclick="toast('演示：上传附件')">上传附件</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <thead><tr>
+            <th style="width:44px"><input type="checkbox"></th>
+            <th>附件名称</th><th style="width:140px">格式</th><th style="width:140px">大小</th><th class="ops" style="width:120px">操作</th>
+          </tr></thead>
+          <tbody><tr><td colspan="5" class="empty-tip">暂无数据</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:12px;margin-top:4px">
+      <button class="btn btn-default" onclick="showPage('list')">取 消</button>
+      <button class="btn btn-primary" onclick="toast('已创建：租用记录自动归入「租用台账」（租用来源 = 手工创建）')">提 交</button>
+    </div>
+  </section>
+
+  <!-- ===== 页面：合同详情 ===== -->
+  <section class="page" id="page-detail" data-page-node-id="wXSJPVeCsJ5zxGwJgvDgCW">
+    <span class="back-link" onclick="showPage('list')" data-page-node-id="j960wBmXqm9bWDak66WJn7">‹ 返回合同列表</span>
+    <div class="page-head" data-page-node-id="62JfGBuXhVV7C7SnhaBzPg">
+      <div data-page-node-id="vv82ljGEavACI4U2tR5DCp">
+        <div class="page-title" data-page-node-id="qgpq9e8D97zW7FqN16ourq">合同详情 <span class="num" style="color:var(--ink-500);font-weight:400;font-size:15px" data-page-node-id="Bf3AYuoiBIQ7MpTGamlD72">HT-2026-0915</span></div>
+        <div class="page-desc" data-page-node-id="LiCSBJZeR0OYqeH8cZp1TR">租用来源：<span class="tag tag-import" data-page-node-id="6mhgwMQ1H3grZkX7Gatlgh">合同导入</span>&nbsp;&nbsp;导入批次：2026-09-07 第 1 批</div>
+      </div>
+      <div style="display:flex;gap:9px" data-page-node-id="J0HFnPNpAJlILvKcAIZGW5">
+        <button class="btn btn-default" onclick="toast('演示：进入编辑')" data-page-node-id="4JnMwz6fQLdIcFZBLHFMEF">编辑</button>
+        <button class="btn btn-primary" onclick="showPage('ledger')" data-page-node-id="1BAQC6mQvfesCfL9mJUL52">查看台账记录</button>
+      </div>
+    </div>
+
+    <div class="card" data-page-node-id="jHE4UAEEzhcRe83pNlVZhh">
+      <div class="card-head" data-page-node-id="ClH2vL4WLESUrmXib0teds"><span class="card-title" data-page-node-id="YL4Y6wzm0BXqPlK1VONaay">基础信息</span></div>
+      <div class="card-body" data-page-node-id="UBIBfTVUQaOzELUFOPt6Bv">
+        <div class="detail-grid" data-page-node-id="a14ZVRiCCnS08lb0ThyA3H">
+          <div data-page-node-id="WtOnxlJWtu4iEoVobEfD9F"><div class="dt" data-page-node-id="SmAqQ8EHtHMHlI0Zqpkdk7">租用单位</div><div class="dd" data-page-node-id="ncavlfQnIALfM4ppsYq0ui">三亚市市场监督管理局</div></div>
+          <div data-page-node-id="J7ayzqxa5xojFl7kVW6Fpm"><div class="dt" data-page-node-id="K0BM4GeKo6ewrUkGE3FHlO">单位性质</div><div class="dd" data-page-node-id="IuT8p477TORItEYDzB0EOF">参公</div></div>
+          <div data-page-node-id="c1jKNlhL9AgOqLWSrJsSTD"><div class="dt" data-page-node-id="z4w9tbxTYEmWGVCQ3cPXPN">租赁用途</div><div class="dd" data-page-node-id="2vHZ4b1PZsAfAT3aHXDjYE">办公用房</div></div>
+          <div data-page-node-id="bn0rj6tySNTcLzyTfm3pCl"><div class="dt" data-page-node-id="eFmhv8K0pASQh2J8ji0bdA">出租方</div><div class="dd" data-page-node-id="tgZIYJA2IxlfrxPDVuhWwn">三亚市某投资有限公司</div></div>
+          <div data-page-node-id="6e0FUvYD0G3DNBZ9LxEY5j"><div class="dt" data-page-node-id="USEHmkXYU5QqTirOpFylSw">租赁期限</div><div class="dd num" data-page-node-id="AujF7hxr7JdSoAyC0IOl58">2026-09-08 至 2027-09-07</div></div>
+          <div data-page-node-id="GCO5r8je6ZdGdI3ZlBp1PO"><div class="dt" data-page-node-id="X6KCBH2HWkG39XverlXf7L">年租金</div><div class="dd num" data-page-node-id="kSCzgjIeyxKoPrArBBw2GY">540,000 元</div></div>
+          <div data-page-node-id="hyg5aTuOmE0XlwTXrB6BBC"><div class="dt" data-page-node-id="iJOXrRsStH4KrkPGKBI6nx">押金</div><div class="dd num" data-page-node-id="77uGk5yF6VqgvorEAAR7k1">50,000 元</div></div>
+          <div data-page-node-id="jz0X2PJ3yBgcQi9su6Ypdq"><div class="dt" data-page-node-id="VAlZl2f80dkb8voPFfoYAN">租金来源</div><div class="dd" data-page-node-id="E52k4ws9ozL2kZ07VSX4Vu">财政拨款</div></div>
+          <div data-page-node-id="3Rxao9u7VQF7zfv8PFSSBM"><div class="dt" data-page-node-id="WsLcEBVNUU8oTwHqfkNTQe">是否备案</div><div class="dd" data-page-node-id="nWJLPfcA4JZV12ZFFM0w3s">是</div></div>
+          <div data-page-node-id="rLRJUAC4RMfxBq8jNKdkwJ"><div class="dt" data-page-node-id="QYa5Of43LYtDkEmXZZNL84">联系人</div><div class="dd" data-page-node-id="6BPIqxA5n7hOF4UEKZdETy">张明</div></div>
+          <div data-page-node-id="FNA0FYHo8zzNgN3ixcRAaH"><div class="dt" data-page-node-id="V4RfD58VI2k7muhrSVdw1s">联系电话</div><div class="dd num" data-page-node-id="LQzQ7qLKAu4EDDQ2TvRLwO">13800138000</div></div>
+          <div data-page-node-id="esk9bF60OHlf9TcOBKustF"><div class="dt" data-page-node-id="YKr0arg2FwnxF3v0fbDNUO">备注</div><div class="dd" data-page-node-id="PgOMka3zaMIGZd7bBNGK1t">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-page-node-id="GXLO2ua5b7XPwjMs7EYbY5">
+      <div class="card-head" data-page-node-id="QO1NJSJCWLttLDUV4nOS6P">
+        <span class="card-title" data-page-node-id="2ATTVUpj1aMZZRljC6yeO4">租赁资产信息</span>
+        <span style="font-size:12.5px;color:var(--ink-500)" data-page-node-id="Sbr96AsVNVQT26h8U4v7Kw">与导入模板同字段 · 地址级记录</span>
+      </div>
+      <div class="card-body" data-page-node-id="fp21gmEAUl8jt2SAY9PnKE">
+        <div class="notice warn" style="margin-bottom:16px" data-page-node-id="guwDg3cGiU7fsIgWkZHKF3">
+          <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="JsDlEPLZi70n4SN1WEy662"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" data-page-node-id="9oaGYrchh0YVKdgsx5k6E9"/><path d="M12 9v4M12 17h.01" data-page-node-id="PUjT453dIxtZ87fCH0L001"/></svg>
+          <div data-page-node-id="zNKuBlGStmFtMiHGrx1Db7">系统无法仅凭租赁地址判断该地址对应<b data-page-node-id="v36Ex5DRIdGfhHrRHzJNt4">楼栋、楼层还是房间</b>，本记录的空间归属为「待确认」。可在租用台账中人工归类，或维持地址级记录。</div>
+        </div>
+        <div class="detail-grid" data-page-node-id="qQyIFsKtaFCBolOZokYqtn">
+          <div class="f-field full" data-page-node-id="w33CDd6WglGPRGa2npOL1D"><div class="dt" data-page-node-id="uorgQjbEIm8OtuZQBmugIS">租赁地址</div><div class="dd" data-page-node-id="5FWg7sxRqGbmPCRGZNrxnA">吉阳区迎宾路382号某商业广场3层</div></div>
+          <div data-page-node-id="LXkzq9KZanJskta8Bs8MGF"><div class="dt" data-page-node-id="ixBYammb47wfj8MBzWK6UO">租赁建筑面积-合计</div><div class="dd num" data-page-node-id="FSoi4ghSbEqubcVPuAGitb">300 ㎡</div></div>
+          <div data-page-node-id="AV3PChEtRpwRACXkd7ghy2"><div class="dt" data-page-node-id="XBAvaViv7FBXWxJxeB3Leb">办公用房面积</div><div class="dd num" data-page-node-id="wqQ7BB3Zs2TOceg69IvJjT">260 ㎡</div></div>
+          <div data-page-node-id="v0aCNoyWFYVBRTAy46w8XF"><div class="dt" data-page-node-id="LEZKyKuoUYbrOBBtzQCKqn">业务用房面积</div><div class="dd num" data-page-node-id="AODGVeFELTmWgl0iUKNCfI">40 ㎡</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 页面：批量导入向导 ===== -->
+  <section class="page" id="page-import" data-page-node-id="IECoBkhcl4Y1fDlU0VBfJl">
+    <span class="back-link" onclick="showPage('list')" data-page-node-id="DLdODm0PhDTl8CxW5yh8DN">‹ 返回合同列表</span>
+    <div class="page-head" data-page-node-id="FsS2KndwOZahEzbLc8wiRC">
+      <div data-page-node-id="skrOTTxDV5oVqHeBddWeFx">
+        <div class="page-title" data-page-node-id="KEWDIVh0kMIYLZ4JTBW4jC">批量导入 · 租用合同</div>
+        <div class="page-desc" data-page-node-id="DKpBN8BoFvr8NctiWrHYCo">按《三亚市直单位办公用房及技术业务用房租用信息统计表》模板一次性导入全部字段</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px 24px 4px" data-page-node-id="YIUqfXwyuU9BYlNtY4JKal">
+      <div class="steps" id="steps" data-page-node-id="VjpVpKIGY6OzX6Nts3EbdY">
+        <div class="step on" data-s="1" data-page-node-id="wj2voBU3N4quEsHiPfivyV"><span class="dot" data-page-node-id="xuzp9SVJ4PJLEa3tJCYFTG">1</span><span class="lbl" data-page-node-id="JdkF7FRe4fyqb1EiX2utBX">下载模板</span></div>
+        <div class="step-line" data-page-node-id="9vptKZvuUTGwAO0JVJTxsl"></div>
+        <div class="step" data-s="2" data-page-node-id="zpZn78Cy9rKEnvqYZcaBGb"><span class="dot" data-page-node-id="OLSTH2KkuvJyw4GVczqQft">2</span><span class="lbl" data-page-node-id="mhANOAcXz9hH1Za1kz1hy8">上传与校验</span></div>
+        <div class="step-line" data-page-node-id="LB4n03UHpPDJ9bXNfrY6hk"></div>
+        <div class="step" data-s="3" data-page-node-id="vC3DQp0hdZLD2r71uyMeFg"><span class="dot" data-page-node-id="mnaWdyB8uB5Dwv6m6Z093r">3</span><span class="lbl" data-page-node-id="pDr118EJaqS6YgzEC1Da11">导入预览</span></div>
+        <div class="step-line" data-page-node-id="eEfJ18HvUqVNeaBgF6XKlK"></div>
+        <div class="step" data-s="4" data-page-node-id="PMPeSoVXSaX4JDbtNvqP1e"><span class="dot" data-page-node-id="7ekHVDTAyrgtIyEXBpdaiM">4</span><span class="lbl" data-page-node-id="foMIPn7PFHpSs5xSB8HUR6">台账生成配置</span></div>
+        <div class="step-line" data-page-node-id="zcQiSww4zij6AgcUOhctwI"></div>
+        <div class="step" data-s="5" data-page-node-id="2QgF7SMjY5HtL9XtspZN5h"><span class="dot" data-page-node-id="vV5GhMLlKDHxUUYtBF4m5s">5</span><span class="lbl" data-page-node-id="z3E37SDphHuzoGW31w1kjv">执行结果</span></div>
+      </div>
+    </div>
+
+    <!-- 步骤1 -->
+    <div class="card step-pane" id="sp-1" data-page-node-id="HsM2lgoTQJ7FAOg3EkdwVd">
+      <div class="card-head" data-page-node-id="OerAScR5N3UyuGQ9aJEG8G"><span class="card-title" data-page-node-id="kAljYU7hbb3kd35VQC9pOB">第一步 · 下载导入模板</span></div>
+      <div class="card-body" data-page-node-id="qqcCjd54tgq3aQ1ZL14LVU">
+        <div class="notice info" data-page-node-id="9Mt5gp0vwx6rddfyiBGC8I">
+          <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="XTDcUm8G3ym5ChiLmWhP7Y"><circle cx="12" cy="12" r="10" data-page-node-id="8jR7NcUbNjrfNfwJkJmFY4"/><path d="M12 16v-4M12 8h.01" data-page-node-id="MSIkavBHbFvrqzmbR97hH8"/></svg>
+          <div data-page-node-id="deL1x4s1oipMtQ1t95OjH7">模板字段与客户实际填报的统计表一致（含备注列、办公 / 业务面积分项）。「一处租赁房屋填一行」；办公与业务面积分开填写，合计由系统自动核对。</div>
+        </div>
+        <table class="tbl" data-page-node-id="H85MqkE59iiQFTgewwDeyz">
+          <thead data-page-node-id="wnrShMzwtABRJDg8oieo4U"><tr data-page-node-id="I5ltw7UlYBSBIKeun628hc"><th data-page-node-id="bsjYuQFqvlG6FQGhfdAnH5">列序</th><th data-page-node-id="QJT8U7ked38A4aYR8HBCul">字段名</th><th data-page-node-id="lJx8lAGz1K2eHkvwOf4X5I">是否必填</th><th data-page-node-id="FZtNqX32fmmBH578kmNr4N">校验规则</th></tr></thead>
+          <tbody data-page-node-id="pzGFD24AOo0kFBSJrOxPMB">
+            <tr data-page-node-id="L3xsWdMKxDmXBVXGAGfNbv"><td data-page-node-id="nMdMQEC5Qs6mU33UjvzayN">1</td><td data-page-node-id="ix8ju6qh7ukxHzRl5rkQXo">单位名称</td><td data-page-node-id="31obCSnGVvF3EjmJNxHanj">必填</td><td data-page-node-id="2uVDdH061G4WEFDmTWeitp">文本</td></tr>
+            <tr data-page-node-id="yO4OJ6EQ2W9bRo0ASvhhCw"><td data-page-node-id="nNHQtIW84ILOAtuJJ6tSxv">2</td><td data-page-node-id="1TNukUyEH8GyPAR17GXTJi">单位性质</td><td data-page-node-id="ie6JIB5GhF29JIuwxkHAYO">必填</td><td data-page-node-id="VulA4WCnI4C4gXP22HqEFD">字典：行政 / 参公 / 公益一类</td></tr>
+            <tr data-page-node-id="onVeCy3DLmlDjKuzaWQ2xa"><td data-page-node-id="dQzdAFgnsO0YwmzmFlYzWv">3</td><td data-page-node-id="V6pWPzZDViLssX3v8AFrV1">租赁地址</td><td data-page-node-id="ifmJWDuCZjjHVSYWMe4uhG">必填</td><td data-page-node-id="Lb3Kdoell3tX4vObPynPMZ">自由文本（不做空间解析）</td></tr>
+            <tr data-page-node-id="eynTxnHI9AHuZVfN5wVnD5"><td data-page-node-id="Kl3v3j89nDL5gMOkkXCAo3">4</td><td data-page-node-id="k8c5ThGNUwzTGSifDD9uCS">租赁建筑面积-合计(㎡)</td><td data-page-node-id="QPiUox8bcQwGwdtvtQGmzr">必填</td><td data-page-node-id="rF1pBPr7ObfAg8eHfJC22d">数值，= 第5列 + 第6列</td></tr>
+            <tr data-page-node-id="OHT6WozoKy37xNx9ju0wf4"><td data-page-node-id="uoe8jGg0jI8mWiwkP29PXQ">5</td><td data-page-node-id="1AnMqBgEw2h7hrThEPTioA">办公用房面积(㎡)</td><td data-page-node-id="rTZ0ZtlOaRXRQ9e7v7C3BL">必填</td><td data-page-node-id="1h2Pa2OZsFJkUPqaLl9XeE">数值</td></tr>
+            <tr data-page-node-id="fTjHDlvNeSp8T7lwr9h7bS"><td data-page-node-id="tIDAGkzjjYmbIAuYACJeit">6</td><td data-page-node-id="EnijejqN01NNPghnyyDV4B">业务用房面积(㎡)</td><td data-page-node-id="NG2XKsGGUVCTWHrQzTCagW">必填</td><td data-page-node-id="K8BPieg58yFlVD0kXkzJtl">数值</td></tr>
+            <tr data-page-node-id="u7FUCkgehgaHAeFed9j0RG"><td data-page-node-id="QG4HKBCuJv2SOTPCWbLGMV">7</td><td data-page-node-id="mQBFc53kJHXVHHRh4RTfSr">出租方名称</td><td data-page-node-id="Fjt19ei5R16HjOLGAsTS0K">必填</td><td data-page-node-id="Eeti5vc4coE7zPq05V3OB7">文本</td></tr>
+            <tr data-page-node-id="vsjmQonX6ivBIIYOCH76jP"><td data-page-node-id="uBjH1AHZBJ7RCEVnsZT0Kn">8</td><td data-page-node-id="xh5m8m2KVmRPvHAfekZQq7">租赁用途</td><td data-page-node-id="JHzQhcyTvMs6LAsUHIc989">必填</td><td data-page-node-id="obw56uO5HjFsr4dVmL20gV">字典：办公用房 / 技术业务用房</td></tr>
+            <tr data-page-node-id="CAhCqFnSBMviq9XEKcCh0k"><td data-page-node-id="ZoCJPtbDYamrler2E9HHjD">9</td><td data-page-node-id="71AWLDlTIox0PRXrYXZFEY">租赁期限</td><td data-page-node-id="QCLDT1exNvJBWbt3BjLXrL">必填</td><td data-page-node-id="mficyE6theyqSJFQ4hViHq">日期区间</td></tr>
+            <tr data-page-node-id="frHNhnwSA81oDORo2A6j3V"><td data-page-node-id="jClII6GvUiIBjKrhaxMAJy">10</td><td data-page-node-id="I3OQE8Angmf8dFxlFLMYPd">年租金(元)</td><td data-page-node-id="hrCmVWopBgl0cGbIZ734kG">必填</td><td data-page-node-id="Qob8qKDBx9oARlApzEJURx">数值</td></tr>
+            <tr data-page-node-id="0heXHdXRRTkVapDHzDv8AB"><td data-page-node-id="Fz9qCZy2Tx2TktAlPUoHC3">11</td><td data-page-node-id="VK5wwreJtKnEfBOMdgfRUD">租金来源</td><td data-page-node-id="O7lNAohHAHMxzVIyRPAT8A">必填</td><td data-page-node-id="jBgUJECFv7GnqapVQh871m">字典：财政拨款 / 自有资金 / 其他</td></tr>
+            <tr data-page-node-id="K1Y2lxWVvl11hpmdeOdEPQ"><td data-page-node-id="Ze2RblTuG8uBnhrJ5g1tWm">12</td><td data-page-node-id="JejziwFzPoPteq08cIfF8I">是否向市机关事务管理局备案</td><td data-page-node-id="Wrbu0Gp6TINhWG5XVKCc4S">必填</td><td data-page-node-id="P0ThKx58drjQvHjZKAFcRi">字典：是 / 否</td></tr>
+            <tr data-page-node-id="3682LWYr06WQICNBcYyARF"><td data-page-node-id="AyYlNvMSxndinW9efp6vOy">13</td><td data-page-node-id="susaO4isidgUUaj6BpRGNk">联系人 / 联系电话 / 备注</td><td data-page-node-id="YU9rvC8VEAlRDAcP5SzjTb">选填</td><td data-page-node-id="mn2nMxs9YhkF92wZWcMCwY">文本</td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:flex-end;gap:9px;padding:16px 0 18px" data-page-node-id="750MOzjvUzr8V0TUi2wh1h">
+          <button class="btn btn-default" onclick="toast('已下载：租用信息统计表导入模板.xlsx（演示）')" data-page-node-id="7TlBuESwMVbDzeAELyhHjF">下载模板</button>
+          <button class="btn btn-primary" onclick="gotoStep(2)" data-page-node-id="YwW9sGFu55G2Uwn2MP3A88">下一步</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤2 -->
+    <div class="card step-pane" id="sp-2" style="display:none" data-page-node-id="R4l3QPVJLqJunAF0acOIGy">
+      <div class="card-head" data-page-node-id="pcBCMFA7JEoV6ENzokS3Ai"><span class="card-title" data-page-node-id="s9N7ZcbFXxj4xh9nqXtqGN">第二步 · 上传与校验</span></div>
+      <div class="card-body" data-page-node-id="fRgMHuPugFiF9H2PK4EKFl">
+        <div style="border:1.5px dashed var(--brand-100);background:var(--brand-50);border-radius:10px;padding:36px;text-align:center;color:var(--brand-700);cursor:pointer" onclick="toast('演示：选择文件 租用信息统计表2026.xlsx')" data-page-node-id="tfigsWjdXZBKXZ0jdLa5GG">
+          <div style="font-size:15px;font-weight:600" data-page-node-id="UxNpDlRE6OSlliGpUiWf22">点击或拖拽上传 .xlsx 文件</div>
+          <div style="font-size:12.5px;margin-top:4px;opacity:.8" data-page-node-id="MdfePOfFrLezrlKvRfB7Gr">已选择：租用信息统计表2026.xlsx（3 条记录）</div>
+        </div>
+        <div class="stat-row" style="margin-top:16px" data-page-node-id="quz0VDNAtpsUtFDNkpgCRu">
+          <div class="stat" data-page-node-id="Uu3qG9cp7qus68uuJz4taM"><div class="k" data-page-node-id="CRDn57D7KoVCM1OoNjH56Q">读取记录</div><div class="v" data-page-node-id="XnePBGwAgGTyP2X8HMgLvf">3</div></div>
+          <div class="stat" data-page-node-id="Ecv0DRyCwXf1hjnHaP5afW"><div class="k" data-page-node-id="oKYo1fS6DrKGtpAU5s2mUD">校验通过</div><div class="v green" data-page-node-id="W3RZcdbm7MbdabDW9kGJmj">2</div></div>
+          <div class="stat" data-page-node-id="SRAwcyzN2si9Hol4QL2Tbd"><div class="k" data-page-node-id="YDDScKENLNsRMkiY4eJ3pz">校验失败</div><div class="v red" data-page-node-id="DL5maKGG07UX79ykVBC7eA">1</div></div>
+          <div class="stat" data-page-node-id="b93l33Ci9vl4rymb007jsb"><div class="k" data-page-node-id="OKf74rMiBshTFeSCtpMe5R">地址待确认</div><div class="v amber" data-page-node-id="FsTsGlSGHnLsHE2t7vIF39">3</div></div>
+        </div>
+        <table class="tbl" data-page-node-id="skwDlzz7dA1XaF5jHu6B17">
+          <thead data-page-node-id="xxr5fiM338MFZguNgpecBc"><tr data-page-node-id="5jJ6g2oSuEKlKRGnVHKHFZ"><th data-page-node-id="im6gB3nZ9m74AxJNGbtRDK">行号</th><th data-page-node-id="BTb3JMe73URVoJlXLWW75I">单位名称</th><th data-page-node-id="YGpE2zRlWxOUI1RjDX6b6B">校验结果</th><th data-page-node-id="OfUV03dl0EWcZxClWOHbDX">说明</th></tr></thead>
+          <tbody data-page-node-id="y61jqpn68nsogOshaHU7rw">
+            <tr data-page-node-id="Agn3p1SsjrUI2CA3b5jD7R"><td class="num" data-page-node-id="wFFxUBL6yRdiyr73HBiJsC">1</td><td data-page-node-id="xIA21ahflF21tltajp77SW">三亚市市场监督管理局</td><td data-page-node-id="iGXl965oS5tkbERQj014Gw"><span class="tag tag-ok" data-page-node-id="YOL0CkGgC2N0mNbv0F8Cje">通过</span></td><td data-page-node-id="43yDKF3ZT43NemP9iEq0bG">地址待确认（见下一步）</td></tr>
+            <tr data-page-node-id="O6C3Wk5HtJzBr94UQnsVep"><td class="num" data-page-node-id="mxsIG3NrcTzWAbSTgZU3cA">2</td><td data-page-node-id="wYWbI0rExLQbg6PykmpnFX">三亚市自然资源和规划局</td><td data-page-node-id="GRYKwGjs42xthrmDDCFLJs"><span class="tag tag-ok" data-page-node-id="OIPqcDjU3aiWCyRGbs6YFr">通过</span></td><td data-page-node-id="VBIw2SSEGIk48ZK66G0CeC">地址待确认（见下一步）</td></tr>
+            <tr data-page-node-id="BfrNQ1bVDL8N8otwJtdYuX"><td style="color:var(--red-700)" class="num" data-page-node-id="OM9zkdTAesqjiVajPrH0zf">3</td><td data-page-node-id="SrvjY7TiQx46JRaaoxrEU5">三亚市水务局</td><td data-page-node-id="NSVgPDSMKu2gKJo6j1UCiX"><span class="tag tag-no" data-page-node-id="DA63KzqhxDz2DT5f1FNfDE">失败</span></td><td data-page-node-id="LTYgGhUJ7V0Fnq5ONQk33r">「年租金」列含非数值内容："五万四千元"</td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:space-between;padding:16px 0 18px" data-page-node-id="UiwHkPRdvFMYQY78AR9nvs">
+          <button class="btn btn-default" onclick="gotoStep(1)" data-page-node-id="gwTcDCDH4P0LQ7sLQ5Ss9k">上一步</button>
+          <div style="display:flex;gap:9px" data-page-node-id="on7bSbXCOU78oPrF7mAJyt">
+            <button class="btn btn-default" onclick="toast('已导出失败行（演示），修正后可重新上传')" data-page-node-id="rlQnTT37bICTnTobmtJ4MU">导出失败行</button>
+            <button class="btn btn-primary" onclick="gotoStep(3)" data-page-node-id="SSVds6z42SeEffzLDCx44l">下一步（导入 2 条通过记录）</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤3 -->
+    <div class="card step-pane" id="sp-3" style="display:none" data-page-node-id="eaLlC06v8vZxm0BhGlfPrB">
+      <div class="card-head" data-page-node-id="dNlYdEsU2jRx4e9myCOq9W">
+        <span class="card-title" data-page-node-id="cLyXSI8FTYApa5gLkhvS8F">第三步 · 导入预览</span>
+        <span class="confirm-stamp" data-page-node-id="4lIOlLVw4deq9a5eUwQnkW">地址歧义 · 每行待确认</span>
+      </div>
+      <div class="card-body" data-page-node-id="lFxRGiEMjbEFIxAcVBVYGw">
+        <div class="notice warn" data-page-node-id="krYjQ05S9kvDKa5cKqhKPO">
+          <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="niqmTXXeTmkxYjELrNnHFQ"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" data-page-node-id="n7eAH4sYsH1woHqgeEuxnU"/><path d="M12 9v4M12 17h.01" data-page-node-id="B9fPTG8nvm1QYrGHM1dRyJ"/></svg>
+          <div data-page-node-id="eIULKKKPPhApeki3uauC5A"><b data-page-node-id="1tsjs5zDkic1Tj7V2Z78zl">系统无法仅凭「租赁地址」判断该地址对应楼栋、楼层还是房间。</b>导入后每条记录的空间归属标记为「待确认」，可在租用台账中人工归类到资产树，或维持地址级记录。此处不做强制解析。</div>
+        </div>
+        <table class="tbl" data-page-node-id="1cA50y54JxRDld7r7fdOqa">
+          <thead data-page-node-id="T4hKveNrupZanFV4G9Fgqg"><tr data-page-node-id="XITr17P6vaicvGHA6NNA99"><th data-page-node-id="N2xw46MtE0OrD9yXFVuBwf">行号</th><th data-page-node-id="YnNrnhwVf2jckbQtnOxNSa">单位名称</th><th data-page-node-id="Q8baBFWaMw5NatNZp4a4zk">租赁地址</th><th style="text-align:right" data-page-node-id="ekz1KLE9joyxvvIJJRoxDp">合计(㎡)</th><th style="text-align:right" data-page-node-id="8A20m6xAfoYgoYiLfKTWua">办公(㎡)</th><th style="text-align:right" data-page-node-id="RQOHyC5RaFw8p4d2ZfogTP">业务(㎡)</th><th data-page-node-id="qPUIhWtARcvhp6AyuextHN">空间归属</th></tr></thead>
+          <tbody data-page-node-id="KKrQjF68x4CDBDqPrwElI9">
+            <tr data-page-node-id="sFdx0m6xxEvkbl5IEUDy47">
+              <td class="num" data-page-node-id="fWvYf2Fr5fdpLzAy6gJPUi">1</td><td data-page-node-id="0SGCOT9cx73XxRdLQqeHpP">三亚市市场监督管理局</td>
+              <td class="addr-cell" data-page-node-id="0C6kfy7fXeBsX6ZkvzHrfJ">吉阳区迎宾路382号某商业广场3层</td>
+              <td class="num" style="text-align:right" data-page-node-id="kEWbBKFYvwTl66TIE0kLJ4">300</td><td class="num" style="text-align:right" data-page-node-id="uq75mgQIG83N9sLu9kVM2Y">260</td><td class="num" style="text-align:right" data-page-node-id="LEF4IygunxlxHtnPMYRzlf">40</td>
+              <td data-page-node-id="nbh0zBQkh5KEeqXhNlVBht"><span class="tag tag-pending" data-page-node-id="gDUvwVrnlUY8Fstir59B1s">待确认</span><div class="pend-note" data-page-node-id="6QniWFL4WPbxpEG9iJs26m">⚠ 无法判定：楼栋 / 楼层 / 房间</div></td>
+            </tr>
+            <tr data-page-node-id="KBltY23XemsZmP2nEPsENd">
+              <td class="num" data-page-node-id="fnRnm1N2wRI4mWWk7MBx1b">2</td><td data-page-node-id="v2UE2kMSNIKTwflLg8GxWk">三亚市自然资源和规划局</td>
+              <td class="addr-cell" data-page-node-id="XP5CCLwdCHG8QR3BQIueHa">天涯区解放路556号鑫泰大厦8层</td>
+              <td class="num" style="text-align:right" data-page-node-id="3QR267KLESDkV0OL7fKJNj">520</td><td class="num" style="text-align:right" data-page-node-id="TWdP1C0CTppyCSoTrOeTNQ">520</td><td class="num" style="text-align:right" data-page-node-id="XXyOQ4c4yzH1NKuM4WkIQC">0</td>
+              <td data-page-node-id="KtpxCL9v5KFuKlhCQ1ASn9"><span class="tag tag-pending" data-page-node-id="8KZgpt46dq38LHtoIKAugF">待确认</span><div class="pend-note" data-page-node-id="mtZoUhSYe9Gqe7gFLSEfmd">⚠ 无法判定：楼栋 / 楼层 / 房间</div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:space-between;padding:16px 0 18px" data-page-node-id="Jcu6pkPNRafLylHaxQRaRg">
+          <button class="btn btn-default" onclick="gotoStep(2)" data-page-node-id="RlF0WKOvnXQObGoNbgEG6R">上一步</button>
+          <button class="btn btn-primary" onclick="gotoStep(4)" data-page-node-id="DBSxxZ4mSu0DkWzmpK4Pg1">下一步</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤4 -->
+    <div class="card step-pane" id="sp-4" style="display:none" data-page-node-id="wSyxG1pItRMqqFnvg3Qi12">
+      <div class="card-head" data-page-node-id="BIDmel2bOHV3RX6AC5Jtk6">
+        <span class="card-title" data-page-node-id="iRkAFMXzXO7BeQRHKkHzfW">第四步 · 台账生成配置</span>
+        <span class="confirm-stamp" data-page-node-id="C5meYHfisoJfDrvPAr6LBS">⧗ 待客户确认（Q2）</span>
+      </div>
+      <div class="card-body" data-page-node-id="u4VbwRmz6ZuGqbNzEJr6wS">
+        <div class="notice warn" data-page-node-id="Rsp1a98GuNb4l7rUo5CC6W">
+          <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="IcyPDoSIAmUZfnDBtzRwM2"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" data-page-node-id="11xU49WCKDaC6lBilj60QY"/><path d="M12 9v4M12 17h.01" data-page-node-id="CAJMKmcluFLfN6uK513ICB"/></svg>
+          <div data-page-node-id="nxTp4IaaGXTuCCmRbuzyld"><b data-page-node-id="rD6T8jRbWuefKw8FH5D7Yl">「导入后是否自动生成租用台账」为待客户确认项。</b>原型当前按「自动生成 + 空间归属待确认」演示；若客户选择不自动生成，则导入完成后需在租用台账页手工「登记入账」。最终口径以客户答复为准。</div>
+        </div>
+        <div class="form-grid" style="max-width:760px" data-page-node-id="ciFUWQzVy8NU6qaXH7z5VA">
+          <div class="f-field full" data-page-node-id="KC5mb2Q4qzD1eoaanTRw52">
+            <label class="f-label" data-page-node-id="EdXjMoxux6IIBLrH30u3Ck"><i data-page-node-id="YlXHYlH8O6tMb4Urnl8Lk1">*</i>导入后自动生成租用台账记录</label>
+            <div class="seg" id="gen-seg" data-page-node-id="6WGkWBUvKoZNbyJ9ggW7XG">
+              <button class="on" data-v="yes" data-page-node-id="kf10FO8fvCPyt9SkLRdIEb">自动生成（默认）</button>
+              <button data-v="no" data-page-node-id="4CkUtUSpZICfwtofSuBwy5">不自动生成，手工登记</button>
+            </div>
+          </div>
+          <div class="f-field full" data-page-node-id="qHc9LF4kv6zJRtXAwH0sFs">
+            <label class="f-label" data-page-node-id="W0MIAwEPgxBeDLGhr6MiGj">生成记录的空间归属初始状态</label>
+            <input type="text" value="待确认（系统不做地址解析）" readonly style="background:var(--surface-2)" data-page-node-id="shX6h99uqJnNQqsXcDYctj">
+            <span class="f-hint" data-page-node-id="hWQnfiyTgwQdq0Lf5BQrIO">后续在租用台账人工归类，或维持地址级</span>
+          </div>
+          <div class="f-field full" data-page-node-id="Gqkow58rlOaAY9EkjSqCfD">
+            <label class="f-label" data-page-node-id="MiTvPEftU8LI9wsqvI98el">租用来源标记</label>
+            <input type="text" value="合同导入" readonly style="background:var(--surface-2)" data-page-node-id="X2N9Ap2CbFKSkaYFAnkB9m">
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:16px 0 18px" data-page-node-id="BqQJdjXZXHUYFJ7HV2w0DR">
+          <button class="btn btn-default" onclick="gotoStep(3)" data-page-node-id="GgD4gSjUzs4aBWHyUBDBCQ">上一步</button>
+          <button class="btn btn-primary" onclick="gotoStep(5)" data-page-node-id="FdKKuEJ41mL6Yec0QlTIHH">确认并执行导入</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤5 -->
+    <div class="card step-pane" id="sp-5" style="display:none" data-page-node-id="qdVVIO6WEekF5hAkoG8jbc">
+      <div class="card-head" data-page-node-id="QGiA4qOTuMZ0l7tLpnDBpU"><span class="card-title" data-page-node-id="xkAwTn85QmlFeHKT4VtsXn">第五步 · 执行结果</span></div>
+      <div class="card-body" data-page-node-id="Hnuqhi0exJXHeXfheb6iOh">
+        <div class="stat-row" data-page-node-id="HGZvSJWFWO4jzEuLw7NtXC">
+          <div class="stat" data-page-node-id="cDsCxVolB8WhHiS7EVRSC4"><div class="k" data-page-node-id="GahYtloaE3X8HHS8OQgb1N">导入成功</div><div class="v green" data-page-node-id="Otws1ESptt783ASrnLLjLK">2</div></div>
+          <div class="stat" data-page-node-id="XRG2ilBGibCQVSZnqaRoVp"><div class="k" data-page-node-id="4eEJD7dbesoxXoCPrreQpf">生成合同</div><div class="v blue" data-page-node-id="wsoBPyp0PjK84G4AXDj9D3">2</div></div>
+          <div class="stat" data-page-node-id="dVaYh2AQ2DXM1iAyNszM4x"><div class="k" data-page-node-id="0JSx6WSNFueF79nu908ADY">生成租用台账记录</div><div class="v blue" data-page-node-id="b1rHUozgevrm8bzhmwUp7y">2</div></div>
+          <div class="stat" data-page-node-id="cGQXSrtfc39GZZdBD7p1AO"><div class="k" data-page-node-id="XIMMNhmm8RdIAQqOUswkAK">空间归属待确认</div><div class="v amber" data-page-node-id="ZcaHLc02TBIHWXRdpa9XqZ">2</div></div>
+        </div>
+        <div class="notice info" data-page-node-id="gcUyR2vAQKiFdDOiHie2sI">
+          <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="WQaQuFCF4ImftSqAdYyTiM"><circle cx="12" cy="12" r="10" data-page-node-id="cp8BA36K2xmmpyt6woLr2I"/><path d="M12 16v-4M12 8h.01" data-page-node-id="QLS68OKYsqnXwIjA62KPQk"/></svg>
+          <div data-page-node-id="MgOmBvjW60fTvXuGZV5tJq">2 条租用台账记录已生成（租用来源 = 合同导入，空间归属 = 待确认）。可前往<b data-page-node-id="1GkmbnrcJ1qS0A1Cjgj6qm">租用台账</b>对记录进行人工归类，或维持地址级记录。</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:9px;padding:6px 0 14px" data-page-node-id="ZbmwWKFCVlalNGBXmwUU0k">
+          <button class="btn btn-default" onclick="gotoStep(1)" data-page-node-id="00WVXEHAiCIUHg96N5XEAT">继续导入</button>
+          <button class="btn btn-primary" onclick="showPage('ledger')" data-page-node-id="WdHzE5PzIfP5bUzfJgn4KV">前往租用台账</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 页面：租用台账 ===== -->
+  <section class="page" id="page-ledger" data-page-node-id="eXXNbQ9XNCqp4lIdKWTww6">
+    <div class="page-head" data-page-node-id="0rAcYchZlZAuL0F7zm4B2c">
+      <div data-page-node-id="F8WO9bZAGFGVMENDcNNpUF">
+        <div class="page-title" data-page-node-id="zvs6N4VNiH8vC0e1HeKPFm">租用台账</div>
+        <div class="page-desc" data-page-node-id="td9dwEieNuMxXBGDBXO1j7">外部租赁房产登记簿，字段与《租用信息统计表》一致；自建房产仍在原「办公用房台账」维护</div>
+      </div>
+      <div style="display:flex;gap:9px" data-page-node-id="9leqRNhfzQqtdy2VEX9sRu">
+        <button class="btn btn-default" onclick="toast('演示：按附件3 模板格式导出当前筛选结果（Q7）')" data-page-node-id="e9emMoYr3L7EDCZRzszkfJ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="bzkn92OW3S78CGAY0O3HXJ"><path d="M12 15V3m0 12l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" data-page-node-id="4KopcOCn0kmTDll7JwZyiN"/></svg>按模板导出
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-bar" data-page-node-id="ZBq0FxvXDYDrHvgLVBnX2w">
+      <div class="f-item" data-page-node-id="5TR41eUGC0fG86jhiQmRms">租用来源
+        <select data-page-node-id="w5ryLLqqRrGa3SPmSZRv9A"><option data-page-node-id="MP6ZENCFlqObfXueZcSLvH">全部</option><option data-page-node-id="jr7leWHG2JbbTCBoHZgYA9">合同导入</option><option data-page-node-id="PufbQzE3ATltJZWtUhZvCW">手工创建</option></select></div>
+      <div class="f-item" data-page-node-id="FcCcWf407cJOb8CTK1cM1M">空间归属
+        <select data-page-node-id="mgq7QlHoSDb3Jeo6Y9JTmq"><option data-page-node-id="mscYRqpUK3w2aiffSBT3VC">全部</option><option data-page-node-id="fZpn2MoE1bpJIXBkixr6ea">待确认</option><option data-page-node-id="VR3ZIcUc7Pb98DpGZh6Isz">已归类</option><option data-page-node-id="WmhGp3w4qLOaj6nAJ9qfdB">维持地址级</option></select></div>
+      <div class="f-item" data-page-node-id="fGV6bD8F903y1qjw7Jd6Fa">是否备案
+        <select data-page-node-id="f5wwbC7LoNgIooBmgyWHHT"><option data-page-node-id="Wboe0sXuidBXw3CUifOjSo">全部</option><option data-page-node-id="WPFLvCVp7rOjHPT4S90ZFz">是</option><option data-page-node-id="OqQ14fybzXjsiywbrxYrlt">否</option></select></div>
+      <div class="f-item" data-page-node-id="qc0hBVmsxBBEk43G2CIcCZ">租赁用途
+        <select data-page-node-id="VqWY82c2WCloIfELGX2j3l"><option data-page-node-id="FODydZtgRzJedl1d7OGpHV">全部</option><option data-page-node-id="aQeZncTkUA7p3OatGVtknQ">办公用房</option><option data-page-node-id="ylyFHTunN4GO156K9KqR71">技术业务用房</option></select></div>
+      <div class="f-item" data-page-node-id="eeIkcQ7OC285mTd9UTSQjX"><input type="text" placeholder="单位 / 地址 / 出租方" style="width:190px" data-page-node-id="MK7Okx909X8oo7ojUVBoA9"></div>
+      <button class="btn btn-primary" style="padding:6px 16px" data-page-node-id="FwTKlpTWA7zzcCe8wYFHvQ">查询</button>
+      <button class="btn btn-default" style="padding:6px 16px" data-page-node-id="sWwbIK9yxGiuXBCXQdrCwe">重置</button>
+    </div>
+
+    <div class="card" data-page-node-id="stF0nlWgJSCW2K9C2emVPh">
+      <table class="tbl" data-page-node-id="PAYezDrsnRpWdRmRvqE3a4">
+        <thead data-page-node-id="ncELzCRdecz0zY7zJGqOGb"><tr data-page-node-id="7BGFC9Jbi3TzQbMpfwGvZu">
+          <th style="width:44px" data-page-node-id="AS4Rdn8GT06hi0nVn0ViGs">序号</th><th data-page-node-id="3x23vosuB1mNBK9PpFWbog">单位名称</th><th data-page-node-id="8EredcmdBfzU9Yh8sMJLdC">租赁地址</th>
+          <th style="text-align:right" data-page-node-id="BfZWGCzvftDkj3Uqf4JSiM">合计(㎡)</th><th style="text-align:right" data-page-node-id="HTxwJMlwlGQVFA2NTECNsP">办公(㎡)</th><th style="text-align:right" data-page-node-id="BXLZmAt89N5V2M4JJSqU6T">业务(㎡)</th>
+          <th data-page-node-id="BNg6nvfXLfYphsHK1eJUNd">出租方</th><th data-page-node-id="7sCHwE4WDajEUT2jMJbQKz">年租金(元)</th><th data-page-node-id="H1BHk9rASmcEbzwhmA3LnI">租用来源</th><th data-page-node-id="TcBpAXqbHQzR03M9cTeXIF">空间归属</th><th data-page-node-id="sLtrQyMgDAEKKMfFvzNZDC">关联合同</th><th class="ops" style="width:150px" data-page-node-id="0A5mpCEQl7SyD4dhMMNBPQ">操作</th>
+        </tr></thead>
+        <tbody data-page-node-id="eBoqxZHFeZy7Uz0i9jGwim">
+          <tr data-page-node-id="F5jOYSvNyxzTcI6sr9bfZW">
+            <td class="num" data-page-node-id="WJqUDyQ5ZDdChoEK4GXmNx">1</td><td data-page-node-id="WBodAWs9SNaVWKFDAYh173">三亚市市场监督管理局</td>
+            <td class="addr-cell" data-page-node-id="AlUeVuYRnKCLiLGnN4cE1W">吉阳区迎宾路382号某商业广场3层</td>
+            <td class="num" style="text-align:right" data-page-node-id="JBWbGEtrlHZdYWjYhdTBG2">300</td><td class="num" style="text-align:right" data-page-node-id="1tsa8i9sTlMbPKkHm8iqYm">260</td><td class="num" style="text-align:right" data-page-node-id="jB8ilSOSFamOgyqz2vLGAw">40</td>
+            <td data-page-node-id="ZGDaYSRB6B7NgMSGPAFMX4">三亚市某投资有限公司</td><td class="num" data-page-node-id="KZWkyRLJ7Dvhqoseg4dPGb">540,000</td>
+            <td data-page-node-id="hbBVVjZ4Vf2MlpadRbJBoc"><span class="tag tag-import" data-page-node-id="xuSEuDJfZHtRWt3gLccDRY">合同导入</span></td>
+            <td data-page-node-id="FS9gVxTVXrgvOIoh5fTyWt"><span class="tag tag-pending" data-page-node-id="DdGQDH8XD1jmG6L8CRspcL">待确认</span></td>
+            <td data-page-node-id="McfIvgGYXVo0u0HKOf6vxz"><a onclick="showPage('detail')" style="cursor:pointer" data-page-node-id="mv2DlEk7bTj2ciNY3Cu0Aq">HT-2026-0915</a></td>
+            <td class="ops" data-page-node-id="nYoArIQoSABVKGX3bErJEg"><button class="btn-text" onclick="openClassify()" data-page-node-id="uGl97NdG397vcGjRP9o0mJ">归类</button><button class="btn-text" data-page-node-id="orACgl9pf3hsq6EKubqhxd">编辑</button><button class="btn-text danger" data-page-node-id="PI6r4gma968zB2DwmTKtCq">删除</button></td>
+          </tr>
+          <tr data-page-node-id="j4O15ncCDgH4rmnMxxjeSy">
+            <td class="num" data-page-node-id="AqNSF2eQ2CE1cBCsnyQV26">2</td><td data-page-node-id="e5rGfAUuDkNtFgpbgGexYV">三亚市自然资源和规划局</td>
+            <td class="addr-cell" data-page-node-id="7jH1t0brikA7m4nj8cWWD7">天涯区解放路556号鑫泰大厦8层</td>
+            <td class="num" style="text-align:right" data-page-node-id="aPvrEQUKwbVXNPrDFXfBM0">520</td><td class="num" style="text-align:right" data-page-node-id="Vt0agcAnfIKIGZO9Se4xbF">520</td><td class="num" style="text-align:right" data-page-node-id="f8syGF1I9GPa0Z6LgcF3Ng">0</td>
+            <td data-page-node-id="nqmoAmcZcHHpQmD8hlfIUA">三亚某置业有限公司</td><td class="num" data-page-node-id="3M1FuVoHKp1lNKLp0b1bM2">320,000</td>
+            <td data-page-node-id="ZLuwGRKsElcDjV7oT8EsYA"><span class="tag tag-import" data-page-node-id="0Me5ZSubT3X4tiZCXVZSYH">合同导入</span></td>
+            <td data-page-node-id="YLNKR8yqSf94YhbOCT8jIx"><span class="tag tag-pending" data-page-node-id="isA5hyU58U9iLZFIsl4DC0">待确认</span></td>
+            <td data-page-node-id="Uu9sUBSupBKDgsC3P3LR9P"><a style="cursor:pointer" data-page-node-id="h33shiowSwfXcxreCFFIbK">HT-2026-0912</a></td>
+            <td class="ops" data-page-node-id="jjGPgJjjFFH7C9aKcbDJnX"><button class="btn-text" onclick="openClassify()" data-page-node-id="L92nh4GzxXBY9T4ZqxrwNs">归类</button><button class="btn-text" data-page-node-id="PIlIg2FzVidUgMYnDoMy7D">编辑</button><button class="btn-text danger" data-page-node-id="Cp65cUqzoeQHShG4av8Dnh">删除</button></td>
+          </tr>
+          <tr data-page-node-id="Tj74bZEMYan6P82BCZSw8Z">
+            <td class="num" data-page-node-id="SvJdbHNXKdnsHFMZ0JnNaa">3</td><td data-page-node-id="hcu6xWTFeKMXza22zhNhx1">三亚市旅游和文化广电体育局</td>
+            <td class="addr-cell" data-page-node-id="KNAOhTQDjg8hIglrP6sQ7g">崖州区科技路1号科创中心303室</td>
+            <td class="num" style="text-align:right" data-page-node-id="O4pbKNuYc4yKsmDfnJM7e8">85</td><td class="num" style="text-align:right" data-page-node-id="lJgsNTFLeRZvcHOaQcDmk3">0</td><td class="num" style="text-align:right" data-page-node-id="J0rECA82E2mfHmSv6DsMyT">85</td>
+            <td data-page-node-id="esSaHBLsjY21WkMUrRbGEx">李某（个人房东）</td><td class="num" data-page-node-id="r8SccWdPiap4LP8PYocXcz">96,000</td>
+            <td data-page-node-id="U1V6HpoJ8B7r3ypV5jN7DT"><span class="tag tag-manual" data-page-node-id="nfChkX2VrgUbZDVPkpYHLu">手工创建</span></td>
+            <td data-page-node-id="APuhvQpLC3fgNEQzaozqmT"><span class="tag tag-ok" data-page-node-id="7fvF2h0Vi4xGXg72hjYEcQ">已归类</span><div style="font-size:11.5px;color:var(--ink-500)" data-page-node-id="LkZAQj6CHHBB54sKuOSidg">科创中心 · 3层 · 303室</div></td>
+            <td data-page-node-id="mhzkNzTG2aJTdzgBAp6cTa"><a style="cursor:pointer" data-page-node-id="wnm1DtNTMqnwajY6NczlcZ">HT-2026-0908</a></td>
+            <td class="ops" data-page-node-id="AQSO7i8zinUlhrNbqgDR6g"><button class="btn-text" data-page-node-id="eS6vijNAKjTPFEgt8mzM2H">重新归类</button><button class="btn-text" data-page-node-id="KBKVAbPywUkc5fSoMFt0QT">编辑</button><button class="btn-text danger" data-page-node-id="fRIBPJ87CHgUnh2dmsVHoM">删除</button></td>
+          </tr>
+          <tr data-page-node-id="DFspE0PAT9UlWlJ1n05M6E">
+            <td class="num" data-page-node-id="mBjWq2L1iC7JxQEquZgrrZ">4</td><td data-page-node-id="XUbk7xHk0DG6pAL0cqVkxD">三亚市农业农村局</td>
+            <td class="addr-cell" data-page-node-id="NhF5sL0tLhf3SObtAatPQL">吉阳区榆亚路115号滨海大楼5层</td>
+            <td class="num" style="text-align:right" data-page-node-id="JYi4TE6ZbN3PCHrnpqNh20">210</td><td class="num" style="text-align:right" data-page-node-id="kS5IZgY2c8gbsRF8u9jpNd">210</td><td class="num" style="text-align:right" data-page-node-id="vieQd9iq1H8c1llenQFNKJ">0</td>
+            <td data-page-node-id="W7NQwLAuIhnR5z6dEQwSeh">三亚某物业管理有限公司</td><td class="num" data-page-node-id="qqXqgBo0rAgItZno6de9Gl">210,000</td>
+            <td data-page-node-id="jPnvApbRwrxUspuX8bVuIh"><span class="tag tag-import" data-page-node-id="jthfpNoziBNXazVrB6Luww">合同导入</span></td>
+            <td data-page-node-id="jaCQuHLV7NzZDfZCr3JLAX"><span class="tag tag-ok" data-page-node-id="Jk39AysNu6rEyPxarB9C1y">已归类</span><div style="font-size:11.5px;color:var(--ink-500)" data-page-node-id="RJHAemDb7d3mKPKeiUXCch">滨海大楼 · 5层</div></td>
+            <td data-page-node-id="qFsqMgKUOIMpUv7JpjnOBK"><a style="cursor:pointer" data-page-node-id="A8YgDpjJQgQzzoOSlF3plm">HT-2026-0901</a></td>
+            <td class="ops" data-page-node-id="FPF8uDGarMtFXl0H4MpEWp"><button class="btn-text" data-page-node-id="Ywyo20KAMmISn30J6Gt1kg">重新归类</button><button class="btn-text" data-page-node-id="9qSxXLDG4nCPcknzGIMaBR">编辑</button><button class="btn-text danger" data-page-node-id="BELPO3UPeVI31bWKspsSpn">删除</button></td>
+          </tr>
+          <tr data-page-node-id="agsBNLfLTheNn0yLHd1bK4">
+            <td class="num" data-page-node-id="SBB9JkcGZeZlRhjUZFfwqm">5</td><td data-page-node-id="Cwto1mmcTZbKBqKBlSyAYY">三亚市卫生健康委员会</td>
+            <td class="addr-cell" data-page-node-id="kfc84h1RLRLgpFvAARFm0u">天涯区凤凰路106号某商务酒店401、402室</td>
+            <td class="num" style="text-align:right" data-page-node-id="KHNnxc174FlLwAb4pP4GP9">120</td><td class="num" style="text-align:right" data-page-node-id="i1Y01GcUzJJdFNFRhjmKw8">0</td><td class="num" style="text-align:right" data-page-node-id="M1a5HXmvUN2Nr8Uwh4N38u">120</td>
+            <td data-page-node-id="ZRpFh3ipzYXHU2HTKKIAUI">某商务酒店管理有限公司</td><td class="num" data-page-node-id="DgEYb1glBOBVK88dWWlyMG">180,000</td>
+            <td data-page-node-id="ueDpwZQOkMaiglS96zmLBi"><span class="tag tag-manual" data-page-node-id="jdEYlHMfEfojyCHEqZwKxS">手工创建</span></td>
+            <td data-page-node-id="HK5GmzAAeCT9US2m0qHN0o"><span class="tag tag-addr" data-page-node-id="jgPbrj8fPQ1FpZ4FDoMftS">维持地址级</span></td>
+            <td data-page-node-id="MwWYQHiZBlM1fo7B6RGuZF"><a style="cursor:pointer" data-page-node-id="Z2ozOUzoPvAuFLMaejSbqb">HT-2026-0827</a></td>
+            <td class="ops" data-page-node-id="XW0p87UBDFv3EYOPrwWhAA"><button class="btn-text" onclick="openClassify()" data-page-node-id="TRbaRAFHNNJVFBFmvaYFwd">归类</button><button class="btn-text" data-page-node-id="jD3HSAE1fRfI64ZM7TEYEk">编辑</button><button class="btn-text danger" data-page-node-id="6DMQyjOHq77BNyeq9y2l1E">删除</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding:0 18px 14px" data-page-node-id="Cz3Adob22YhsegzGlSiEWH"><div class="pager" data-page-node-id="qB8BfYKaPFqaEh2NDPPaoR">共 18 条<span class="cur" data-page-node-id="jbhSdKrdahduI30tVjb7zZ">1</span><span data-page-node-id="F6YRCu0GiPO3Tg3mox6YaC">2</span>每页 10 条</div></div>
+    </div>
+  </section>
+
+  </div>
+</div>
+
+<!-- ===== 弹窗：人工归类 ===== -->
+<div class="mask" id="modal-classify" data-page-node-id="kUIxKtyhhgHMqIlX2BHX5D">
+  <div class="modal" style="width:600px" data-page-node-id="PVMfrliJFnna83GDlJWRIy">
+    <div class="modal-head" data-page-node-id="TBvgGa3alZHlZM5wmSx2M7"><span data-page-node-id="p9OfsuUAoOMXdBBjLHS1pk">人工归类 · 挂接到资产树</span><button class="modal-x" onclick="closeClassify()" data-page-node-id="YMQfDHXOxrN4uA6CvSqImg">×</button></div>
+    <div class="modal-body" data-page-node-id="HrYKpjYuqlFfkky3ZeGDq4">
+      <div class="notice warn" style="margin-bottom:16px" data-page-node-id="gUCE5aKg121NdzAKoqHUQf">
+        <svg class="nicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="XVRNakZJZappS7p8RQQiK4"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" data-page-node-id="cb743T8wDQ0LstOLqBvyUH"/><path d="M12 9v4M12 17h.01" data-page-node-id="kfAykouPz5zSofjahirEvE"/></svg>
+        <div data-page-node-id="x0jQTxKIJHoTZJOLvlpct3">将地址级租用记录挂接到现有资产树（楼栋 → 楼层 → 房间）。挂接后台账按房间粒度展示；<b data-page-node-id="vr0dn2fY0X6XngBB34FUVU">归类规则与权限待客户确认（Q3）</b>，也可选择维持地址级记录。</div>
+      </div>
+      <div style="font-size:13px;color:var(--ink-700);margin-bottom:10px" data-page-node-id="CvQ1R1Hx2VcBvu71HOOHLL">
+        待归类记录：<b data-page-node-id="2HlVFoWmgg3kuFe1EKVyen">三亚市市场监督管理局 · 吉阳区迎宾路382号某商业广场3层 · 300㎡</b>
+      </div>
+      <div class="casc" data-page-node-id="4Gv3CrTvkKUpZLUxdz0exi">
+        <div class="f-field" data-page-node-id="uL11WRj61gc4XGwEEx4lLn"><label class="f-label" data-page-node-id="3m9sApwA2kbMDDyRl7uyHW">楼栋</label>
+          <select onchange="toast('演示：联动加载楼层')" data-page-node-id="SMEyQtHuLqAq7k7S2UAEZ6"><option data-page-node-id="yKV4XCRHOzU0yXnSbxQopx">请选择</option><option data-page-node-id="Ntvxo44GqllMDOdTEXWZio">某商业广场（吉阳区迎宾路382号）</option><option data-page-node-id="CrEiFqXnKqI9C1tjtACJhE">鑫泰大厦（天涯区解放路556号）</option></select></div>
+        <div class="f-field" data-page-node-id="zCEidSz5KwYCetjhIUgict"><label class="f-label" data-page-node-id="q1y8YpqfIOaEBpgUs8fSg7">楼层</label>
+          <select data-page-node-id="sx0huvkoVELojDufl0H9mE"><option data-page-node-id="n5kopNYpDgj5eOQtEqrxni">请先选楼栋</option><option data-page-node-id="p96JGsP1T1mnhEOTljqGgF">3 层</option><option data-page-node-id="rmbHaAKmGvO16qZXafheCe">5 层</option></select></div>
+        <div class="f-field" data-page-node-id="5UaRcGzNNoaoLiO7yiDKYr"><label class="f-label" data-page-node-id="Dxgg14Ga6y4saDtbFX4f8h">房间（可多选）</label>
+          <select multiple size="3" style="height:auto" data-page-node-id="rjWiiTNuF5Qh49xNVK4W8d"><option data-page-node-id="FKFZW5PmyYLc6cBnA3BwR8">301（45㎡）</option><option data-page-node-id="iBK8BmqLinhaLX4OuvAjFZ">302（45㎡）</option><option data-page-node-id="20N9lDGmylhfPfLB49LrEY">303（50㎡）</option></select></div>
+      </div>
+      <div style="margin-top:14px;font-size:12.5px;color:var(--ink-500)" data-page-node-id="X5vqqa8M1Sbr8zzUDeiqEv">
+        若资产树中不存在对应楼栋，可先到「办公用房台账」新建租用类楼栋后再归类（本期不做自动创建，见 Q6）。
+      </div>
+    </div>
+    <div class="modal-foot" data-page-node-id="w7cLpMyTKIwzvj4aCFowC5">
+      <button class="btn btn-default" onclick="closeClassify()" data-page-node-id="3FbbblBRRUSFgnrfqE3WDw">取消</button>
+      <button class="btn btn-default" onclick="toast('已保存：维持地址级记录')" data-page-node-id="NVbPt3dHopnvyfMcq2mBda">维持地址级</button>
+      <button class="btn btn-primary" onclick="closeClassify();toast('归类成功：状态 待确认 → 已归类（演示）')" data-page-node-id="7930KpWYCw8aYpt8VHov0s">确认归类</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" data-page-node-id="1AisLzmDraL1d2aFF50gex"></div>
+
+<script>
+const crumbMap={list:'租用合同管理 / <b>合同列表</b>',form:'租用合同管理 / <b>新增合同</b>',detail:'租用合同管理 / <b>合同详情</b>',import:'租用合同管理 / <b>批量导入</b>',ledger:'<b>租用台账</b>'};
+function showPage(id,navItem){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  document.getElementById('page-'+id).classList.add('show');
+  document.getElementById('crumb').innerHTML=crumbMap[id]||'';
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav=id==='ledger'?document.querySelectorAll('.nav-item')[4]:document.querySelectorAll('.nav-item')[3];
+  if(nav)nav.classList.add('active');
+  window.scrollTo({top:0});
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400);
+}
+/* 导入向导 */
+function gotoStep(n){
+  document.querySelectorAll('.step-pane').forEach((p,i)=>p.style.display=(i+1===n)?'':'none');
+  document.querySelectorAll('#steps .step').forEach(s=>{
+    const k=+s.dataset.s;
+    s.classList.toggle('on',k===n);
+    s.classList.toggle('done',k<n);
+  });
+  document.querySelectorAll('#steps .step-line').forEach((l,i)=>l.classList.toggle('done',i+1<n));
+}
+/* 资产方式切换 */
+document.querySelectorAll('#asset-seg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#asset-seg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  const direct=b.dataset.v==='direct';
+  document.getElementById('asset-direct').style.display=direct?'':'none';
+  document.getElementById('asset-pick').style.display=direct?'none':'';
+}));
+/* 台账生成配置切换 */
+document.querySelectorAll('#gen-seg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#gen-seg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+}));
+/* 面积自动合计 */
+function calcArea(){
+  const o=parseFloat(document.getElementById('area-office').value)||0;
+  const z=parseFloat(document.getElementById('area-biz').value)||0;
+  const box=document.getElementById('area-calc');
+  if(!o&&!z){box.style.visibility='hidden';return}
+  box.style.visibility='visible';
+  document.getElementById('calc-text').textContent=`办公 ${o} + 业务 ${z} = 合计 ${(o+z).toFixed(2)} ㎡（已自动填入基础信息「租赁建筑面积」，可手工修正）`;
+  document.getElementById('area-total').value=(o+z).toFixed(2);
+}
+/* 归类弹窗 */
+function openClassify(){document.getElementById('modal-classify').classList.add('show')}
+function closeClassify(){document.getElementById('modal-classify').classList.remove('show')}
+document.getElementById('modal-classify').addEventListener('click',e=>{if(e.target===e.currentTarget)closeClassify()});
+</script>
+</body>
+</html>
